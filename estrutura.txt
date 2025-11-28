@@ -7,12 +7,12 @@
 
 public_html/
 │
-├── 📄 index.html                    (Página Principal - Home)
-├── 📄 blog.html                     (Canal do Time - Blog)
-├── 📄 privacidade.html              (Política de Privacidade)
-├── 📄 termos.html                   (Termos e Condições)
-├── 📄 consentimento.html            (Aviso de Consentimento)
-├── 📄 404.html                      (Página de Erro Customizada)
+├── 📄 index.php                    (Página Principal - Home)
+├── 📄 blog.php                     (Canal do Time - Blog)
+├── 📄 privacidade.php              (Política de Privacidade)
+├── 📄 termos.php                   (Termos e Condições)
+├── 📄 consentimento.php            (Aviso de Consentimento)
+├── 📄 404.php                      (Página de Erro Customizada)
 ├── 📄 save-posts.php                (API para Salvar Posts)
 ├── 📄 save-players.php              (API para Gerenciar Jogadores)
 ├── 📄 get-players.php               (API para Listar Jogadores)
