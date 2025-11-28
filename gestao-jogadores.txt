@@ -1,0 +1,353 @@
+# EXEMPLOS DE USO - API DE JOGADORES
+
+## 📋 Gerenciamento de Jogadores do Elenco
+
+### Token de Autenticação
+```
+basquete_token_@@_2025
+```
+
+---
+
+## 1️⃣ ADICIONAR NOVO JOGADOR
+
+### cURL:
+```bash
+curl -X POST https://seudominio.com.br/save-players.php \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "basquete_token_@@_2025",
+    "action": "add",
+    "player": {
+      "number": "23",
+      "name": "João Silva",
+      "position": "Armador",
+      "photo": "https://i.imgur.com/exemplo123.jpg",
+      "height": "1.88m",
+      "weight": "85kg",
+      "birthdate": "1995-05-20",
+      "nationality": "Brasileiro",
+      "bio": "Jogador experiente com passagens por vários times",
+      "stats": {
+        "points": 14.5,
+        "assists": 5.2,
+        "rebounds": 3.1
+      },
+      "social": {
+        "instagram": "https://instagram.com/joaosilva",
+        "twitter": "https://twitter.com/joaosilva"
+      }
+    }
+  }'
+```
+
+### Postman/Insomnia:
+- **Método:** POST
+- **URL:** `https://seudominio.com.br/save-players.php`
+- **Headers:** 
+  - `Content-Type: application/json`
+- **Body (raw JSON):**
+```json
+{
+  "token": "basquete_token_@@_2025",
+  "action": "add",
+  "player": {
+    "number": "23",
+    "name": "João Silva",
+    "position": "Armador",
+    "photo": "https://i.imgur.com/exemplo123.jpg",
+    "height": "1.88m",
+    "weight": "85kg",
+    "birthdate": "1995-05-20",
+    "nationality": "Brasileiro",
+    "bio": "Jogador experiente",
+    "stats": {
+      "points": 14.5,
+      "assists": 5.2,
+      "rebounds": 3.1
+    },
+    "social": {
+      "instagram": "https://instagram.com/joaosilva",
+      "twitter": ""
+    }
+  }
+}
+```
+
+---
+
+## 2️⃣ ATUALIZAR JOGADOR EXISTENTE
+
+Para atualizar, use o mesmo número de camisa. O sistema identifica e atualiza automaticamente.
+
+### cURL:
+```bash
+curl -X POST https://seudominio.com.br/save-players.php \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "basquete_token_@@_2025",
+    "action": "update",
+    "player": {
+      "number": "1",
+      "name": "Mosquito",
+      "position": "Armador",
+      "photo": "https://i.imgur.com/NOVA_FOTO.jpg",
+      "height": "1.85m",
+      "weight": "82kg",
+      "birthdate": "1995-03-15",
+      "nationality": "Brasileiro",
+      "bio": "Armador experiente - BIOGRAFIA ATUALIZADA",
+      "stats": {
+        "points": 15.2,
+        "assists": 7.1,
+        "rebounds": 3.0
+      },
+      "social": {
+        "instagram": "https://instagram.com/mosquito_oficial",
+        "twitter": "https://twitter.com/mosquito"
+      }
+    }
+  }'
+```
+
+---
+
+## 3️⃣ DELETAR JOGADOR
+
+### cURL:
+```bash
+curl -X POST https://seudominio.com.br/save-players.php \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "basquete_token_@@_2025",
+    "action": "delete",
+    "number": "23"
+  }'
+```
+
+### JSON:
+```json
+{
+  "token": "basquete_token_@@_2025",
+  "action": "delete",
+  "number": "23"
+}
+```
+
+---
+
+## 4️⃣ LISTAR TODOS OS JOGADORES
+
+### cURL:
+```bash
+curl https://seudominio.com.br/get-players.php
+```
+
+### No navegador:
+```
+https://seudominio.com.br/get-players.php
+```
+
+---
+
+## 5️⃣ BUSCAR JOGADOR ESPECÍFICO
+
+### cURL:
+```bash
+curl https://seudominio.com.br/get-players.php?number=1
+```
+
+### No navegador:
+```
+https://seudominio.com.br/get-players.php?number=1
+```
+
+---
+
+## 📸 TROCAR FOTO DE UM JOGADOR
+
+Para trocar apenas a foto, atualize o jogador com a nova URL:
+
+```bash
+curl -X POST https://seudominio.com.br/save-players.php \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "basquete_token_@@_2025",
+    "action": "update",
+    "player": {
+      "number": "11",
+      "name": "Brunão",
+      "position": "Pivô",
+      "photo": "https://i.imgur.com/NOVA_FOTO_BRUNAO.jpg",
+      "height": "2.08m",
+      "weight": "108kg",
+      "birthdate": "1990-02-14",
+      "nationality": "Brasileiro",
+      "bio": "Pivô experiente, domina o garrafão",
+      "stats": {
+        "points": 14.6,
+        "assists": 1.2,
+        "rebounds": 9.3
+      },
+      "social": {
+        "instagram": "https://instagram.com/brunao",
+        "twitter": ""
+      }
+    }
+  }'
+```
+
+---
+
+## 📊 ATUALIZAR ESTATÍSTICAS
+
+Para atualizar apenas as estatísticas:
+
+```bash
+curl -X POST https://seudominio.com.br/save-players.php \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "basquete_token_@@_2025",
+    "action": "update",
+    "player": {
+      "number": "2",
+      "name": "Crescenzi",
+      "position": "Ala-armador",
+      "photo": "https://i.imgur.com/DsFTwbS.jpeg",
+      "height": "1.95m",
+      "weight": "88kg",
+      "birthdate": "1993-07-22",
+      "nationality": "Brasileiro",
+      "bio": "Ala versátil com ótimo arremesso",
+      "stats": {
+        "points": 18.5,
+        "assists": 4.2,
+        "rebounds": 5.1
+      },
+      "social": {
+        "instagram": "https://instagram.com/crescenzi",
+        "twitter": "https://twitter.com/crescenzi"
+      }
+    }
+  }'
+```
+
+---
+
+## ⚠️ CAMPOS OBRIGATÓRIOS
+
+Ao adicionar ou atualizar um jogador, os seguintes campos são **obrigatórios**:
+
+- ✅ `number` - Número da camisa (string)
+- ✅ `name` - Nome do jogador
+- ✅ `position` - Posição em quadra
+- ✅ `photo` - URL da foto
+
+### Campos Opcionais:
+
+- `height` - Altura
+- `weight` - Peso
+- `birthdate` - Data de nascimento
+- `nationality` - Nacionalidade
+- `bio` - Biografia
+- `stats` - Estatísticas (objeto com points, assists, rebounds)
+- `social` - Redes sociais (objeto com instagram, twitter)
+
+---
+
+## 🎯 POSIÇÕES VÁLIDAS
+
+- Armador
+- Ala-armador
+- Ala
+- Ala-Pivô
+- Pivô
+
+---
+
+## ✅ RESPOSTAS DA API
+
+### Sucesso (Adicionar):
+```json
+{
+  "status": "ok",
+  "action": "added",
+  "totalPlayers": 14,
+  "message": "Added successfully"
+}
+```
+
+### Sucesso (Atualizar):
+```json
+{
+  "status": "ok",
+  "action": "updated",
+  "totalPlayers": 13,
+  "message": "Updated successfully"
+}
+```
+
+### Sucesso (Deletar):
+```json
+{
+  "status": "ok",
+  "action": "deleted",
+  "totalPlayers": 12,
+  "message": "Deleted successfully"
+}
+```
+
+### Erro (Token inválido):
+```json
+{
+  "error": "Unauthorized"
+}
+```
+
+### Erro (Campo obrigatório faltando):
+```json
+{
+  "error": "Missing required field: photo"
+}
+```
+
+---
+
+## 🔐 SEGURANÇA
+
+⚠️ **IMPORTANTE:** Altere o token antes de colocar em produção!
+
+No arquivo `save-players.php`, linha 10:
+```php
+$SECRET_TOKEN = 'SEU_TOKEN_SUPER_SEGURO_AQUI';
+```
+
+---
+
+## 📱 INTEGRAÇÃO COM O SITE
+
+O arquivo `index.html` já está configurado para carregar os jogadores automaticamente do `players.json` através do `get-players.php`.
+
+Quando você adicionar, atualizar ou deletar um jogador via API, o site refletirá as mudanças automaticamente ao recarregar a página.
+
+---
+
+## 🆘 TROUBLESHOOTING
+
+**Problema:** Jogadores não aparecem no site
+**Solução:** 
+- Verifique se `players.json` existe em `assets/data/`
+- Verifique permissões (666 para players.json, 755 para pastas)
+- Verifique se `get-players.php` está na raiz do public_html
+
+**Problema:** Erro ao salvar jogador
+**Solução:**
+- Verifique o token
+- Verifique campos obrigatórios
+- Verifique permissões do players.json (deve ser 666)
+
+**Problema:** Foto não aparece
+**Solução:**
+- Use URLs completas (https://...)
+- Verifique se a imagem está acessível publicamente
+- O sistema usa placeholder automático se a foto falhar
