@@ -1547,7 +1547,7 @@
             <div class="footer-section">
                 <h3>Contato</h3>
                 <ul class="footer-links">
-                    <li><a href="mailto:suporte@bsbbkt.com.br">suporte@bsbbkt.com.br</a></li>
+                    <li><a href="/cdn-cgi/l/email-protection#d3a0a6a3bca1a7b693b1a0b1b1b8a7fdb0bcbefdb1a1"><span class="__cf_email__" data-cfemail="235056534c515746634150414148570d404c4e0d4151">[email&#160;protected]</span></a></li>
                 </ul>
             </div>
             <div class="footer-section">
@@ -1569,7 +1569,7 @@
         </div>
     </footer>
 
-    <script>
+    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
         // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.getElementById('navbar');
@@ -1597,6 +1597,55 @@
                 }
             });
         });
+
+        // Load players dynamically
+        async function loadPlayers() {
+            try {
+                const response = await fetch('get-players.php');
+                if (!response.ok) {
+                    console.error('Failed to load players');
+                    return;
+                }
+                
+                const players = await response.json();
+                const track = document.getElementById('carouselTrack');
+                
+                // Limpar conteúdo existente
+                track.innerHTML = '';
+                
+                // Criar cards dos jogadores
+                const createPlayerCard = (player) => {
+                    return `
+                        <a href="#" class="player-card" data-player="${player.number}">
+                            <div class="player-image">
+                                <img src="${player.photo}" alt="${player.name}" onerror="this.src='https://via.placeholder.com/280x350/1A1A1A/FFFFFF?text=${player.number}'">
+                            </div>
+                            <div class="player-info">
+                                <div class="player-number">#${player.number}</div>
+                                <h3 class="player-name">${player.name}</h3>
+                                <p class="player-position">${player.position}</p>
+                            </div>
+                        </a>
+                    `;
+                };
+                
+                // Adicionar jogadores (primeiro conjunto)
+                players.forEach(player => {
+                    track.innerHTML += createPlayerCard(player);
+                });
+                
+                // Adicionar jogadores novamente (segundo conjunto para loop infinito)
+                players.forEach(player => {
+                    track.innerHTML += createPlayerCard(player);
+                });
+                
+            } catch (error) {
+                console.error('Erro ao carregar jogadores:', error);
+            }
+        }
+
+        // Carregar jogadores quando a página carregar
+        document.addEventListener('DOMContentLoaded', loadPlayers);
 
         // Carousel controls
         const track = document.getElementById('carouselTrack');
@@ -1652,12 +1701,4 @@
         }, observerOptions);
 
         // Observe elements for animation
-        document.querySelectorAll('.record-card, .timeline-item, .sponsor-logo').forEach(el => {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(30px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        });
-    </script>
-</body>
-</html>
+        document.querySelectorAll('.record-card, .timeline-item, .sponsor-logo').forEach(e
