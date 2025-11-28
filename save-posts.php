@@ -1,4 +1,9 @@
 <?php
+/**
+ * Endpoint para salvar posts no blog
+ * Brasília Basquete - Sistema de Posts
+ */
+
 // Caminho para o posts.json
 $JSON_FILE = __DIR__ . '/assets/data/posts.json';
 
