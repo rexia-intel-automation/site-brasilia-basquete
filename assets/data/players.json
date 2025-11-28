@@ -1,1 +1,275 @@
-
+[
+  {
+    "id": 1,
+    "number": "1",
+    "name": "Mosquito",
+    "position": "Armador",
+    "photo": "https://i.imgur.com/NZ9MQQH.jpeg",
+    "height": "1.85m",
+    "weight": "80kg",
+    "birthdate": "1995-03-15",
+    "nationality": "Brasileiro",
+    "bio": "Armador experiente com grande visão de jogo",
+    "stats": {
+      "points": 12.5,
+      "assists": 6.2,
+      "rebounds": 2.8
+    },
+    "social": {
+      "instagram": "https://instagram.com/mosquito",
+      "twitter": "https://twitter.com/mosquito"
+    }
+  },
+  {
+    "id": 2,
+    "number": "2",
+    "name": "Crescenzi",
+    "position": "Ala-armador",
+    "photo": "https://i.imgur.com/DsFTwbS.jpeg",
+    "height": "1.95m",
+    "weight": "88kg",
+    "birthdate": "1993-07-22",
+    "nationality": "Brasileiro",
+    "bio": "Ala versátil com ótimo arremesso de três pontos",
+    "stats": {
+      "points": 15.3,
+      "assists": 3.5,
+      "rebounds": 4.1
+    },
+    "social": {
+      "instagram": "https://instagram.com/crescenzi",
+      "twitter": "https://twitter.com/crescenzi"
+    }
+  },
+  {
+    "id": 6,
+    "number": "6",
+    "name": "Gustavo",
+    "position": "Armador",
+    "photo": "https://i.imgur.com/I6A5l08.jpeg",
+    "height": "1.83m",
+    "weight": "78kg",
+    "birthdate": "1998-01-10",
+    "nationality": "Brasileiro",
+    "bio": "Jovem promissor com grande potencial",
+    "stats": {
+      "points": 8.7,
+      "assists": 4.3,
+      "rebounds": 2.1
+    },
+    "social": {
+      "instagram": "",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 7,
+    "number": "7",
+    "name": "Corvalán",
+    "position": "Ala-armador",
+    "photo": "https://i.imgur.com/Owsi001.jpeg",
+    "height": "1.98m",
+    "weight": "92kg",
+    "birthdate": "1991-11-05",
+    "nationality": "Argentino",
+    "bio": "Argentino experiente, peça fundamental do elenco",
+    "stats": {
+      "points": 13.8,
+      "assists": 3.2,
+      "rebounds": 5.4
+    },
+    "social": {
+      "instagram": "https://instagram.com/corvalan",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 9,
+    "number": "9",
+    "name": "Pedro",
+    "position": "Ala",
+    "photo": "https://i.imgur.com/1MSNOeq.jpeg",
+    "height": "2.00m",
+    "weight": "95kg",
+    "birthdate": "1994-05-18",
+    "nationality": "Brasileiro",
+    "bio": "Ala forte e versátil na defesa e ataque",
+    "stats": {
+      "points": 11.2,
+      "assists": 2.1,
+      "rebounds": 6.8
+    },
+    "social": {
+      "instagram": "",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 10,
+    "number": "10",
+    "name": "Lucas",
+    "position": "Armador",
+    "photo": "https://i.imgur.com/uxKFMhs.jpeg",
+    "height": "1.88m",
+    "weight": "82kg",
+    "birthdate": "1996-09-30",
+    "nationality": "Brasileiro",
+    "bio": "Armador consistente e bom arremessador",
+    "stats": {
+      "points": 10.5,
+      "assists": 5.1,
+      "rebounds": 2.9
+    },
+    "social": {
+      "instagram": "",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 11,
+    "number": "11",
+    "name": "Brunão",
+    "position": "Pivô",
+    "photo": "https://i.imgur.com/tweN5FJ.jpeg",
+    "height": "2.08m",
+    "weight": "108kg",
+    "birthdate": "1990-02-14",
+    "nationality": "Brasileiro",
+    "bio": "Pivô experiente, domina o garrafão",
+    "stats": {
+      "points": 14.6,
+      "assists": 1.2,
+      "rebounds": 9.3
+    },
+    "social": {
+      "instagram": "https://instagram.com/brunao",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 13,
+    "number": "13",
+    "name": "Paulichi",
+    "position": "Ala-Pivô",
+    "photo": "https://i.imgur.com/xrxtgK5.jpeg",
+    "height": "2.03m",
+    "weight": "98kg",
+    "birthdate": "1992-08-25",
+    "nationality": "Brasileiro",
+    "bio": "Ala-pivô versátil com boa técnica",
+    "stats": {
+      "points": 9.8,
+      "assists": 1.8,
+      "rebounds": 7.2
+    },
+    "social": {
+      "instagram": "",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 14,
+    "number": "14",
+    "name": "Buiu",
+    "position": "Ala-armador",
+    "photo": "https://i.imgur.com/PsFVGHd.jpeg",
+    "height": "1.93m",
+    "weight": "86kg",
+    "birthdate": "1997-04-12",
+    "nationality": "Brasileiro",
+    "bio": "Jovem talento com muito futuro pela frente",
+    "stats": {
+      "points": 7.5,
+      "assists": 2.9,
+      "rebounds": 3.4
+    },
+    "social": {
+      "instagram": "",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 15,
+    "number": "15",
+    "name": "Carbonari",
+    "position": "Pivô",
+    "photo": "https://i.imgur.com/FjIYznN.jpeg",
+    "height": "2.10m",
+    "weight": "112kg",
+    "birthdate": "1989-12-03",
+    "nationality": "Brasileiro",
+    "bio": "Pivô tradicional, forte presença no garrafão",
+    "stats": {
+      "points": 8.3,
+      "assists": 0.8,
+      "rebounds": 8.9
+    },
+    "social": {
+      "instagram": "",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 27,
+    "number": "27",
+    "name": "Zago",
+    "position": "Ala",
+    "photo": "https://i.imgur.com/8HYz263.jpeg",
+    "height": "1.96m",
+    "weight": "90kg",
+    "birthdate": "1995-06-20",
+    "nationality": "Brasileiro",
+    "bio": "Ala dinâmico com boa finalização",
+    "stats": {
+      "points": 10.1,
+      "assists": 2.3,
+      "rebounds": 4.7
+    },
+    "social": {
+      "instagram": "",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 30,
+    "number": "30",
+    "name": "Von Haydin",
+    "position": "Ala",
+    "photo": "https://i.imgur.com/eQdiXei.jpeg",
+    "height": "2.01m",
+    "weight": "96kg",
+    "birthdate": "1993-10-08",
+    "nationality": "Brasileiro",
+    "bio": "Ala completo, destaque no ataque e defesa",
+    "stats": {
+      "points": 12.9,
+      "assists": 2.7,
+      "rebounds": 6.1
+    },
+    "social": {
+      "instagram": "",
+      "twitter": ""
+    }
+  },
+  {
+    "id": 77,
+    "number": "77",
+    "name": "Beller",
+    "position": "Ala-Pivô",
+    "photo": "https://i.imgur.com/QcpuFl5.jpeg",
+    "height": "2.05m",
+    "weight": "100kg",
+    "birthdate": "1994-03-28",
+    "nationality": "Brasileiro",
+    "bio": "Ala-pivô energético e versátil",
+    "stats": {
+      "points": 11.4,
+      "assists": 1.5,
+      "rebounds": 7.8
+    },
+    "social": {
+      "instagram": "https://instagram.com/beller",
+      "twitter": ""
+    }
+  }
+]
