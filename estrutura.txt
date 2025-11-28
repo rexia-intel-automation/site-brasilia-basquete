@@ -1,0 +1,342 @@
+═══════════════════════════════════════════════════════════════════════════════
+  BRASÍLIA BASQUETE - ESTRUTURA DE ARQUIVOS PARA HOSTINGER hPANEL
+═══════════════════════════════════════════════════════════════════════════════
+
+📂 ESTRUTURA COMPLETA DE PASTAS E ARQUIVOS
+═══════════════════════════════════════════════════════════════════════════════
+
+public_html/
+│
+├── 📄 index.html                    (Página Principal - Home)
+├── 📄 blog.html                     (Canal do Time - Blog)
+├── 📄 privacidade.html              (Política de Privacidade)
+├── 📄 termos.html                   (Termos e Condições)
+├── 📄 consentimento.html            (Aviso de Consentimento)
+├── 📄 404.html                      (Página de Erro Customizada)
+├── 📄 save-posts.php                (API para Salvar Posts)
+├── 📄 save-players.php              (API para Gerenciar Jogadores)
+├── 📄 get-players.php               (API para Listar Jogadores)
+├── 📄 .htaccess                     (Configuração Apache)
+│
+└── 📁 assets/
+    ├── 📁 data/
+    │   ├── 📄 posts.json            (Banco de dados dos posts)
+    │   └── 📄 players.json          (Banco de dados dos jogadores)
+    │
+    ├── 📁 css/                      (CSS separados - opcional)
+    │   └── 📄 styles.css
+    │
+    ├── 📁 js/                       (JavaScript separado - opcional)
+    │   └── 📄 main.js
+    │
+    └── 📁 images/
+        ├── 📁 logos/                (Logos do time e patrocinadores)
+        ├── 📁 players/              (Fotos dos jogadores)
+        └── 📁 posts/                (Imagens dos posts do blog)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+  PASSO A PASSO - INSTALAÇÃO NO hPANEL
+═══════════════════════════════════════════════════════════════════════════════
+
+ETAPA 1: ACESSO AO hPANEL
+─────────────────────────────────────────────────────────────────────────────
+1. Faça login no hPanel da Hostinger
+2. Localize seu domínio/website
+3. Clique em "File Manager" (Gerenciador de Arquivos)
+4. Navegue até a pasta "public_html"
+
+
+ETAPA 2: LIMPEZA (Se necessário)
+─────────────────────────────────────────────────────────────────────────────
+Se já existir conteúdo padrão no public_html:
+1. Selecione todos os arquivos antigos
+2. Clique com botão direito → "Delete"
+3. Confirme a exclusão
+
+
+ETAPA 3: UPLOAD DOS ARQUIVOS HTML
+─────────────────────────────────────────────────────────────────────────────
+1. No File Manager, esteja dentro de "public_html"
+2. Clique no botão "Upload" (ícone de nuvem com seta)
+3. Faça upload dos seguintes arquivos:
+
+   ✓ index.html
+   ✓ blog.html
+   ✓ privacidade.html
+   ✓ termos.html
+   ✓ consentimento.html
+   ✓ 404.html
+
+4. Aguarde o upload completar (barra verde de progresso)
+
+
+ETAPA 4: UPLOAD DOS ARQUIVOS PHP E .htaccess
+─────────────────────────────────────────────────────────────────────────────
+1. No File Manager, ainda em "public_html"
+2. Clique em "Upload"
+3. Faça upload de:
+
+   ✓ save-posts.php
+   ✓ save-players.php
+   ✓ get-players.php
+   ✓ .htaccess
+
+IMPORTANTE: O .htaccess pode não aparecer visível. 
+Para visualizar arquivos ocultos:
+- Clique em "Settings" (Configurações) no File Manager
+- Marque a opção "Show hidden files"
+
+
+ETAPA 5: CRIAR ESTRUTURA DE PASTAS
+─────────────────────────────────────────────────────────────────────────────
+Ainda no public_html:
+
+1. Criar pasta "assets":
+   - Clique em "New Folder"
+   - Nome: assets
+   - Clique em "Create"
+
+2. Entre na pasta "assets" (clique duplo)
+
+3. Criar subpastas dentro de "assets":
+   - Clique em "New Folder" → Nome: data
+   - Clique em "New Folder" → Nome: images
+   - Clique em "New Folder" → Nome: css (opcional)
+   - Clique em "New Folder" → Nome: js (opcional)
+
+4. Entre na pasta "images"
+
+5. Criar subpastas dentro de "images":
+   - Clique em "New Folder" → Nome: logos
+   - Clique em "New Folder" → Nome: players
+   - Clique em "New Folder" → Nome: posts
+
+
+ETAPA 6: UPLOAD DOS ARQUIVOS JSON
+─────────────────────────────────────────────────────────────────────────────
+1. Navegue até: public_html/assets/data/
+2. Clique em "Upload"
+3. Faça upload dos arquivos:
+   - posts.json
+   - players.json
+
+
+ETAPA 7: CONFIGURAR PERMISSÕES
+─────────────────────────────────────────────────────────────────────────────
+
+IMPORTANTE: Permissões corretas são essenciais para funcionamento!
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  ARQUIVOS HTML (index.html, blog.html, etc.)                            │
+│  Permissão: 644                                                         │
+│                                                                          │
+│  Como alterar:                                                          │
+│  1. Clique com botão direito no arquivo                                 │
+│  2. Selecione "Permissions" (Permissões)                                │
+│  3. Digite: 644                                                         │
+│  4. Clique em "Change"                                                  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  save-posts.php                                                         │
+│  Permissão: 644                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  .htaccess                                                              │
+│  Permissão: 644                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  posts.json e players.json                                              │
+│  Permissão: 666 (permite escrita pelo PHP)                             │
+│                                                                          │
+│  CRÍTICO: Estes arquivos PRECISAM ter permissão 666 para funcionar!    │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│  TODAS AS PASTAS (assets/, data/, images/, etc.)                       │
+│  Permissão: 755                                                         │
+│                                                                          │
+│  Como alterar múltiplas pastas:                                         │
+│  1. Selecione todas as pastas (Ctrl + clique)                          │
+│  2. Clique direito → "Permissions"                                      │
+│  3. Digite: 755                                                         │
+│  4. Marque "Apply to subdirectories"                                    │
+│  5. Clique em "Change"                                                  │
+└─────────────────────────────────────────────────────────────────────────┘
+
+
+ETAPA 8: CONFIGURAR SSL/HTTPS
+─────────────────────────────────────────────────────────────────────────
+1. Volte ao dashboard principal do hPanel
+2. No menu lateral, clique em "SSL"
+3. Encontre seu domínio
+4. Clique em "Set up SSL" (se ainda não estiver ativo)
+5. Selecione "Free SSL" (Let's Encrypt)
+6. Clique em "Install"
+7. Aguarde até 15 minutos para ativação completa
+
+O .htaccess já está configurado para redirecionar HTTP → HTTPS automaticamente.
+
+
+═══════════════════════════════════════════════════════════════════════════════
+  VERIFICAÇÃO FINAL - CHECKLIST
+═══════════════════════════════════════════════════════════════════════════════
+
+Antes de lançar o site, verifique:
+
+□ Todos os arquivos HTML foram enviados
+□ save-posts.php está na raiz do public_html
+□ .htaccess está na raiz do public_html
+□ Pasta assets/ criada com subpastas corretas
+□ posts.json está em assets/data/ com permissão 666
+□ SSL está ativo no hPanel
+□ Acesse https://seudominio.com.br e verifique se carrega
+□ Teste navegação entre páginas
+□ Teste links do menu
+□ Verifique se as imagens carregam
+
+
+═══════════════════════════════════════════════════════════════════════════════
+  COMO ADICIONAR UM POST NO BLOG
+═══════════════════════════════════════════════════════════════════════════════
+
+MÉTODO 1: Via cURL (Linux/Mac/PowerShell)
+─────────────────────────────────────────────────────────────────────────────
+
+curl -X POST https://seudominio.com.br/save-posts.php \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "basquete_token_@@_2025",
+    "post": {
+      "slug": "vitoria-minas-85-78",
+      "title": "Brasília Vence Minas por 85-78",
+      "excerpt": "Grande vitória fora de casa com destaque para Mosquito",
+      "content": "<p>O Caixa Brasília Basquete conquistou importante vitória...</p>",
+      "image": "https://i.imgur.com/exemplo.jpg",
+      "category": "Jogos",
+      "date": "2025-11-28",
+      "author": "Redação BBT"
+    }
+  }'
+
+
+MÉTODO 2: Via Postman/Insomnia
+─────────────────────────────────────────────────────────────────────────────
+
+1. Abra Postman
+2. Método: POST
+3. URL: https://seudominio.com.br/save-posts.php
+4. Headers:
+   - Content-Type: application/json
+5. Body (raw JSON):
+
+{
+  "token": "basquete_token_@@_2025",
+  "post": {
+    "slug": "vitoria-minas-85-78",
+    "title": "Brasília Vence Minas por 85-78",
+    "excerpt": "Grande vitória fora de casa",
+    "content": "Conteúdo completo aqui...",
+    "image": "https://i.imgur.com/exemplo.jpg",
+    "category": "Jogos",
+    "date": "2025-11-28",
+    "author": "Redação BBT"
+  }
+}
+
+6. Clique em "Send"
+
+
+MÉTODO 3: Editando posts.json Diretamente
+─────────────────────────────────────────────────────────────────────────────
+
+1. No File Manager, navegue até: public_html/assets/data/
+2. Clique com direito em "posts.json"
+3. Selecione "Edit"
+4. Adicione o post no formato:
+
+[
+  {
+    "slug": "vitoria-minas-85-78",
+    "title": "Brasília Vence Minas por 85-78",
+    "excerpt": "Grande vitória fora de casa",
+    "content": "Conteúdo completo...",
+    "image": "https://i.imgur.com/exemplo.jpg",
+    "category": "Jogos",
+    "date": "2025-11-28",
+    "author": "Redação BBT"
+  }
+]
+
+5. Clique em "Save"
+
+
+═══════════════════════════════════════════════════════════════════════════════
+  CATEGORIAS DISPONÍVEIS PARA POSTS
+═══════════════════════════════════════════════════════════════════════════════
+
+✓ Notícias
+✓ Bastidores
+✓ Entrevistas
+✓ Jogos
+✓ Elenco
+✓ História
+✓ Recordes
+
+
+═══════════════════════════════════════════════════════════════════════════════
+  TROUBLESHOOTING - PROBLEMAS COMUNS
+═══════════════════════════════════════════════════════════════════════════════
+
+PROBLEMA: Site mostra "403 Forbidden"
+SOLUÇÃO:
+- Verifique se o index.html está na raiz do public_html
+- Verifique permissões do index.html (deve ser 644)
+- Verifique permissões da pasta public_html (deve ser 755)
+
+PROBLEMA: Posts não salvam
+SOLUÇÃO:
+- Verifique permissão do posts.json (DEVE SER 666)
+- Verifique permissão da pasta assets/data/ (deve ser 755)
+- Teste se o PHP está funcionando: crie teste.php com <?php phpinfo(); ?>
+
+PROBLEMA: Erro 404 nas páginas
+SOLUÇÃO:
+- Verifique se o .htaccess foi enviado
+- Confirme que mod_rewrite está ativo (na Hostinger geralmente está)
+- Limpe cache do navegador
+
+PROBLEMA: HTTPS não funciona
+SOLUÇÃO:
+- Confirme SSL ativo no hPanel
+- Aguarde até 24h para propagação
+- Force reload com Ctrl+Shift+R
+
+PROBLEMA: Imagens não aparecem
+SOLUÇÃO:
+- Verifique caminhos das imagens nos HTMLs
+- Use URLs absolutas (https://...)
+- Confirme permissões da pasta images/ (755)
+
+
+═══════════════════════════════════════════════════════════════════════════════
+  CONTATOS E SUPORTE
+═══════════════════════════════════════════════════════════════════════════════
+
+Suporte Técnico Hostinger:
+🌐 https://www.hostinger.com.br/suporte
+💬 Chat ao vivo disponível 24/7
+
+Email do Clube:
+📧 suporte@bsbbkt.com.br
+
+DPO (Proteção de Dados):
+📧 supervisor@bsbbkt.com.br
+
+
+═══════════════════════════════════════════════════════════════════════════════
+  FIM DO GUIA - BOA SORTE! 🏀
+═══════════════════════════════════════════════════════════════════════════════
