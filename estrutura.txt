@@ -7,12 +7,13 @@
 
 public_html/
 │
-├── 📄 index.php                    (Página Principal - Home)
-├── 📄 blog.php                     (Canal do Time - Blog)
-├── 📄 privacidade.php              (Política de Privacidade)
-├── 📄 termos.php                   (Termos e Condições)
-├── 📄 consentimento.php            (Aviso de Consentimento)
-├── 📄 404.php                      (Página de Erro Customizada)
+├── 📄 index.html                    (Página Principal - Home)
+├── 📄 blog.html                     (Canal do Time - Blog)
+├── 📄 privacidade.html              (Política de Privacidade)
+├── 📄 termos.html                   (Termos e Condições)
+├── 📄 consentimento.html            (Aviso de Consentimento)
+├── 📄 404.html                      (Página de Erro Customizada)
+├── 📄 admin.html                    (🆕 Painel Admin para Gerenciar Jogadores)
 ├── 📄 save-posts.php                (API para Salvar Posts)
 ├── 📄 save-players.php              (API para Gerenciar Jogadores)
 ├── 📄 get-players.php               (API para Listar Jogadores)
@@ -67,6 +68,7 @@ ETAPA 3: UPLOAD DOS ARQUIVOS HTML
    ✓ termos.html
    ✓ consentimento.html
    ✓ 404.html
+   ✓ admin.html (🆕 Painel Administrativo)
 
 4. Aguarde o upload completar (barra verde de progresso)
 
