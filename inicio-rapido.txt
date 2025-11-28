@@ -1,0 +1,140 @@
+# ⚡ INÍCIO RÁPIDO - 5 MINUTOS
+
+## 🎯 Para Começar AGORA
+
+### Passo 1: Download (30 segundos)
+Baixe TODOS os arquivos de `/mnt/user-data/outputs/`
+
+### Passo 2: Upload (2 minutos)
+1. Acesse hPanel da Hostinger
+2. Vá em File Manager → public_html
+3. Faça upload de todos arquivos HTML e PHP
+4. Crie pasta: `assets/data/`
+5. Upload dos arquivos JSON nessa pasta
+
+### Passo 3: Permissões (1 minuto)
+1. Clique com direito em `posts.json`
+2. Permissions → Digite `666` → OK
+3. Repita para `players.json`
+
+### Passo 4: Testar (30 segundos)
+Acesse: `https://seudominio.com.br`
+
+### Passo 5: Admin (30 segundos)
+Acesse: `https://seudominio.com.br/admin.html`
+Senha: `brasilia2025`
+
+---
+
+## 🎨 GERENCIAR JOGADORES (30 segundos cada)
+
+### Adicionar Jogador
+```
+admin.html → Adicionar Jogador → Preencher → Salvar
+```
+
+### Editar Jogador
+```
+admin.html → Editar (no card) → Alterar → Salvar
+```
+
+### Trocar Foto
+```
+imgur.com → Upload → Copiar URL
+admin.html → Editar → Colar URL → Salvar
+```
+
+---
+
+## 🔐 SEGURANÇA (2 minutos)
+
+### Trocar Senha Admin
+Edite `admin.html`, linha 413:
+```javascript
+const ADMIN_PASSWORD = 'SuaNovaSeNhA123';
+```
+
+### Trocar Token API
+Edite `save-players.php`, linha 10:
+```php
+$SECRET_TOKEN = 'seu_token_seguro_aqui';
+```
+
+---
+
+## 📚 DOCUMENTAÇÃO
+
+**Guias por Ordem de Importância:**
+
+1. **ESTRUTURA.txt** - ⭐⭐⭐⭐⭐ Leia PRIMEIRO! (Passo a passo completo)
+2. **GUIA-ADMIN.md** - ⭐⭐⭐⭐⭐ Como usar o painel admin
+3. **README.md** - ⭐⭐⭐⭐ Instruções técnicas
+4. **ENTREGA-FINAL.md** - ⭐⭐⭐ Resumo completo do projeto
+5. **PREVIEW-ADMIN.md** - ⭐⭐⭐ Preview visual do admin
+6. **EXEMPLOS-JOGADORES.md** - ⭐⭐ Exemplos de API (avançado)
+7. **RESUMO-FINAL.md** - ⭐ Overview geral
+
+---
+
+## 🆘 PROBLEMAS COMUNS
+
+**Site não abre?**
+→ Verifique se todos arquivos foram enviados para `public_html/`
+
+**Jogadores não aparecem?**
+→ Verifique permissão 666 nos arquivos JSON
+
+**Não consigo salvar no admin?**
+→ Verifique permissão 666 do `players.json`
+
+**Erro 404?**
+→ Crie arquivo `404.html` simples ou use o padrão do servidor
+
+---
+
+## ✅ CHECKLIST MÍNIMO
+
+- [ ] Todos arquivos HTML em public_html
+- [ ] Todos arquivos PHP em public_html  
+- [ ] Pasta assets/data/ criada
+- [ ] JSON files dentro de assets/data/
+- [ ] Permissão 666 nos JSON
+- [ ] Site abre no navegador
+- [ ] Admin.html funciona
+
+**Pronto! Site funcionando! 🎉**
+
+---
+
+## 🎯 PRÓXIMAS TAREFAS
+
+1. Trocar senhas/tokens (segurança)
+2. Adicionar logo real dos patrocinadores
+3. Testar no celular
+4. Adicionar primeiro post no blog
+5. Divulgar!
+
+---
+
+## 💡 DICA DE OURO
+
+**Use SEMPRE o admin.html para gerenciar jogadores!**
+
+É 10x mais rápido e fácil que usar API manualmente.
+
+---
+
+**URLs Importantes:**
+
+- 🏠 Site: `https://seudominio.com.br`
+- 🎨 Admin: `https://seudominio.com.br/admin.html`
+- 📝 Blog: `https://seudominio.com.br/blog.html`
+
+**Credenciais Padrão:**
+
+- 🔐 Senha Admin: `brasilia2025`
+- 🔑 Token API: `basquete_token_@@_2025`
+
+---
+
+**🏀 Bom trabalho! O site está pronto para usar!**
