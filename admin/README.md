@@ -2,6 +2,25 @@
 
 Sistema de gerenciamento de conteúdo para o site do Brasília Basquete.
 
+## 📚 Documentação
+
+Este arquivo contém uma visão geral técnica. Para documentação completa:
+
+- **📖 [MANUAL.md](MANUAL.md)** - Manual completo e didático para iniciantes
+  - Passo a passo detalhado de configuração
+  - Como usar todas as funcionalidades
+  - Solução de problemas comuns
+  - Perguntas frequentes
+
+- **⚡ [GUIA-RAPIDO.md](GUIA-RAPIDO.md)** - Referência rápida
+  - Ações mais comuns
+  - Atalhos e dicas
+  - Checklists úteis
+
+👉 **Primeira vez usando o sistema? Comece pelo [MANUAL.md](MANUAL.md)**
+
+---
+
 ## 📋 Requisitos
 
 - PHP 7.4 ou superior
