@@ -5,27 +5,49 @@
  */
 
 class Database {
-    private $db_file = __DIR__ . '/../data/brasilia_basquete.db';
     private $conn;
+    private $credentials;
 
     public function __construct() {
+        $this->loadCredentials();
         $this->connect();
         $this->createTables();
     }
 
+    private function loadCredentials() {
+        $credentials_file = __DIR__ . '/db_credentials.php';
+        if (!file_exists($credentials_file)) {
+            die("Arquivo de credenciais não encontrado. Certifique-se de que db_credentials.php existe.");
+        }
+        $this->credentials = require $credentials_file;
+
+        // Validate required fields
+        if (empty($this->credentials['password'])) {
+            die("ATENÇÃO: Configure a senha do banco de dados em admin/config/db_credentials.php");
+        }
+    }
+
     private function connect() {
         try {
-            // Create data directory if it doesn't exist
-            $data_dir = dirname($this->db_file);
-            if (!file_exists($data_dir)) {
-                mkdir($data_dir, 0755, true);
-            }
+            $dsn = sprintf(
+                "mysql:host=%s;dbname=%s;charset=%s",
+                $this->credentials['host'],
+                $this->credentials['database'],
+                $this->credentials['charset']
+            );
 
-            $this->conn = new PDO('sqlite:' . $this->db_file);
-            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            $this->conn->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+            $this->conn = new PDO(
+                $dsn,
+                $this->credentials['username'],
+                $this->credentials['password'],
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false
+                ]
+            );
         } catch(PDOException $e) {
-            die("Connection failed: " . $e->getMessage());
+            die("Erro na conexão com o banco de dados: " . $e->getMessage());
         }
     }
 
@@ -36,55 +58,55 @@ class Database {
     private function createTables() {
         // Users table
         $sql_users = "CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            email TEXT,
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            username VARCHAR(50) UNIQUE NOT NULL,
+            password VARCHAR(255) NOT NULL,
+            email VARCHAR(100),
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )";
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
         // Players table
         $sql_players = "CREATE TABLE IF NOT EXISTS players (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            number INTEGER NOT NULL,
-            name TEXT NOT NULL,
-            position TEXT NOT NULL,
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            number INT NOT NULL,
+            name VARCHAR(100) NOT NULL,
+            position VARCHAR(50) NOT NULL,
             photo TEXT,
-            height TEXT,
-            weight TEXT,
+            height VARCHAR(20),
+            weight VARCHAR(20),
             birth_date DATE,
-            nationality TEXT DEFAULT 'Brasileiro',
-            active INTEGER DEFAULT 1,
+            nationality VARCHAR(50) DEFAULT 'Brasileiro',
+            active TINYINT(1) DEFAULT 1,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )";
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
         // Categories table
         $sql_categories = "CREATE TABLE IF NOT EXISTS categories (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT UNIQUE NOT NULL,
-            slug TEXT UNIQUE NOT NULL,
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) UNIQUE NOT NULL,
+            slug VARCHAR(100) UNIQUE NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )";
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
         // Posts table
         $sql_posts = "CREATE TABLE IF NOT EXISTS posts (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            title TEXT NOT NULL,
-            slug TEXT UNIQUE NOT NULL,
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            slug VARCHAR(255) UNIQUE NOT NULL,
             excerpt TEXT,
-            content TEXT,
+            content LONGTEXT,
             featured_image TEXT,
-            category_id INTEGER,
-            author_id INTEGER,
-            is_featured INTEGER DEFAULT 0,
-            published INTEGER DEFAULT 1,
-            views INTEGER DEFAULT 0,
+            category_id INT,
+            author_id INT,
+            is_featured TINYINT(1) DEFAULT 0,
+            published TINYINT(1) DEFAULT 1,
+            views INT DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (category_id) REFERENCES categories(id),
-            FOREIGN KEY (author_id) REFERENCES users(id)
-        )";
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE SET NULL,
+            FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE SET NULL
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci";
 
         try {
             $this->conn->exec($sql_users);
