@@ -4,707 +4,77 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Canal do Time - Caixa Brasília Basquete</title>
+
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
-        :root {
-            --primary-blue: #005CA9;
-            --primary-orange: #D17D00;
-            --primary-black: #0A0A0A;
-            --secondary-gray: #1A1A1A;
-            --accent-blue-light: #B8DDFF;
-            --text-white: #FFFFFF;
-            --text-gray: #CCCCCC;
-        }
-
-        body {
-            font-family: 'Rajdhani', sans-serif;
-            background: var(--primary-black);
-            color: var(--text-white);
-            overflow-x: hidden;
-        }
-
-        /* MENU NAVIGATION */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: linear-gradient(180deg, rgba(10, 10, 10, 0.98) 0%, rgba(10, 10, 10, 0.85) 100%);
-            backdrop-filter: blur(20px);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border-bottom: 1px solid rgba(0, 92, 169, 0.1);
-        }
-
-        .navbar.scrolled {
-            background: rgba(10, 10, 10, 0.95);
-            box-shadow: 0 4px 30px rgba(0, 92, 169, 0.1);
-        }
-
-        .nav-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 40px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 140px;
-            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .navbar.scrolled .nav-container {
-            height: 100px;
-        }
-
-        .logo-container {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .logo {
-            height: 120px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            filter: drop-shadow(0 4px 20px rgba(0, 92, 169, 0.3));
-        }
-
-        .navbar.scrolled .logo {
-            height: 80px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 45px;
-            list-style: none;
-            align-items: center;
-        }
-
-        .nav-links.left {
-            flex: 1;
-            justify-content: flex-end;
-            padding-right: 200px;
-        }
-
-        .nav-links.right {
-            flex: 1;
-            justify-content: flex-start;
-            padding-left: 200px;
-        }
-
-        .nav-links a {
-            color: var(--text-white);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 16px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            position: relative;
-            transition: color 0.3s ease;
-        }
-
-        .nav-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--primary-orange);
-            transition: width 0.3s ease;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary-orange);
-        }
-
-        .nav-links a:hover::after,
-        .nav-links a.active::after {
-            width: 100%;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-        }
-
-        .social-links a {
-            color: var(--text-white);
-            font-size: 20px;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border: 2px solid rgba(0, 92, 169, 0.3);
-        }
-
-        .social-links a:hover {
-            color: var(--primary-orange);
-            border-color: var(--primary-orange);
-            transform: translateY(-3px);
-        }
-
-        /* BLOG HERO */
-        .blog-hero {
-            margin-top: 140px;
-            padding: 80px 40px 60px;
-            background: linear-gradient(135deg, var(--secondary-gray) 0%, var(--primary-black) 100%);
-            border-bottom: 1px solid rgba(0, 92, 169, 0.2);
-        }
-
-        .blog-hero-content {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .blog-title {
-            font-family: 'Bebas Neue', cursive;
-            font-size: clamp(50px, 8vw, 90px);
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 15px;
-        }
-
-        .blog-subtitle {
-            font-size: 20px;
-            color: var(--text-gray);
-            letter-spacing: 2px;
-        }
-
-        /* BLOG FILTERS */
-        .blog-filters {
-            padding: 40px 40px 20px;
-            background: var(--primary-black);
-            border-bottom: 1px solid rgba(0, 92, 169, 0.1);
-        }
-
-        .filters-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .filter-btn {
-            padding: 12px 30px;
-            background: transparent;
-            border: 2px solid rgba(0, 92, 169, 0.3);
-            color: var(--text-white);
-            font-family: 'Rajdhani', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-btn:hover,
-        .filter-btn.active {
-            background: var(--primary-orange);
-            border-color: var(--primary-orange);
-            transform: translateY(-2px);
-        }
-
-        /* FEATURED POST */
-        .featured-section {
-            padding: 60px 40px;
-            background: var(--secondary-gray);
-        }
-
-        .featured-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 24px;
-            color: var(--primary-orange);
-            letter-spacing: 3px;
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .section-label::after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary-orange) 0%, transparent 100%);
-        }
-
-        .featured-post {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 40px;
-            background: var(--primary-black);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 92, 169, 0.2);
-            transition: all 0.4s ease;
-        }
-
-        .featured-post:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 60px rgba(0, 92, 169, 0.3);
-            border-color: var(--primary-orange);
-        }
-
-        .featured-image {
-            position: relative;
-            overflow: hidden;
-            height: 500px;
-        }
-
-        .featured-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .featured-post:hover .featured-image img {
-            transform: scale(1.05);
-        }
-
-        .featured-tag {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            background: var(--primary-orange);
-            color: var(--text-white);
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .featured-content {
-            padding: 50px 40px 50px 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .featured-meta {
-            display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            color: var(--text-gray);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .featured-title {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 48px;
-            line-height: 1.1;
-            margin-bottom: 20px;
-            color: var(--text-white);
-        }
-
-        .featured-excerpt {
-            font-size: 18px;
-            line-height: 1.8;
-            color: var(--text-gray);
-            margin-bottom: 30px;
-        }
-
-        .read-more {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 15px 40px;
-            background: var(--primary-blue);
-            color: var(--text-white);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 16px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border-radius: 30px;
-            transition: all 0.3s ease;
-            align-self: flex-start;
-        }
-
-        .read-more:hover {
-            background: var(--primary-orange);
-            transform: translateX(5px);
-        }
-
-        /* POSTS GRID */
-        .posts-section {
-            padding: 60px 40px;
-            background: var(--primary-black);
-        }
-
-        .posts-container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .posts-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 40px;
-            margin-bottom: 60px;
-        }
-
-        .post-card {
-            background: var(--secondary-gray);
-            border-radius: 20px;
-            overflow: hidden;
-            border: 1px solid rgba(0, 92, 169, 0.2);
-            transition: all 0.4s ease;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-        }
-
-        .post-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-orange);
-            box-shadow: 0 20px 60px rgba(209, 125, 0, 0.3);
-        }
-
-        .post-image {
-            position: relative;
-            width: 100%;
-            height: 280px;
-            overflow: hidden;
-        }
-
-        .post-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.6s ease;
-        }
-
-        .post-card:hover .post-image img {
-            transform: scale(1.1);
-        }
-
-        .post-tag {
-            position: absolute;
-            bottom: 15px;
-            left: 15px;
-            background: var(--primary-orange);
-            color: var(--text-white);
-            padding: 6px 15px;
-            border-radius: 15px;
-            font-weight: 700;
-            font-size: 12px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
-        .post-content {
-            padding: 30px;
-        }
-
-        .post-meta {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: var(--text-gray);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .post-title {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 28px;
-            line-height: 1.2;
-            margin-bottom: 12px;
-            color: var(--text-white);
-        }
-
-        .post-excerpt {
-            font-size: 16px;
-            line-height: 1.6;
-            color: var(--text-gray);
-        }
-
-        .load-more {
-            text-align: center;
-            margin-top: 40px;
-        }
-
-        .load-more-btn {
-            display: inline-block;
-            padding: 18px 50px;
-            background: transparent;
-            border: 2px solid var(--primary-blue);
-            color: var(--text-white);
-            font-family: 'Rajdhani', sans-serif;
-            font-weight: 700;
-            font-size: 16px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .load-more-btn:hover {
-            background: var(--primary-blue);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(0, 92, 169, 0.4);
-        }
-
-        /* FOOTER */
-        footer {
-            background: var(--primary-black);
-            padding: 80px 40px 40px;
-            border-top: 1px solid rgba(0, 92, 169, 0.2);
-        }
-
-        .footer-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 60px;
-            margin-bottom: 60px;
-        }
-
-        .footer-section h3 {
-            font-family: 'Bebas Neue', cursive;
-            font-size: 28px;
-            margin-bottom: 25px;
-            color: var(--primary-orange);
-            letter-spacing: 2px;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 15px;
-        }
-
-        .footer-links a {
-            color: var(--text-gray);
-            text-decoration: none;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            display: inline-block;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary-orange);
-            transform: translateX(5px);
-        }
-
-        .footer-social {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
-        .footer-social a {
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0, 92, 169, 0.1);
-            border: 2px solid rgba(0, 92, 169, 0.3);
-            border-radius: 50%;
-            color: var(--text-white);
-            text-decoration: none;
-            font-size: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .footer-social a:hover {
-            background: var(--primary-orange);
-            border-color: var(--primary-orange);
-            transform: translateY(-5px);
-        }
-
-        .footer-bottom {
-            padding-top: 40px;
-            border-top: 1px solid rgba(0, 92, 169, 0.1);
-            text-align: center;
-        }
-
-        .footer-legal {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .footer-legal a {
-            color: var(--text-gray);
-            text-decoration: none;
-            font-size: 14px;
-            transition: color 0.3s ease;
-        }
-
-        .footer-legal a:hover {
-            color: var(--primary-orange);
-        }
-
-        .footer-copyright {
-            color: var(--text-gray);
-            font-size: 14px;
-            margin-top: 20px;
-        }
-
-        /* MOBILE MENU */
-        .mobile-menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        .mobile-menu-toggle span {
-            width: 30px;
-            height: 3px;
-            background: var(--text-white);
-            transition: all 0.3s ease;
-            border-radius: 3px;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 1024px) {
-            .nav-links.left,
-            .nav-links.right {
-                display: none;
-            }
-
-            .mobile-menu-toggle {
-                display: flex;
-            }
-
-            .logo-container {
-                position: static;
-                transform: none;
-            }
-
-            .nav-container {
-                justify-content: space-between;
-            }
-
-            .featured-post {
-                grid-template-columns: 1fr;
-            }
-
-            .featured-image {
-                height: 400px;
-            }
-
-            .featured-content {
-                padding: 40px;
-            }
-
-            .posts-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 30px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-container {
-                padding: 0 20px;
-                height: 100px;
-            }
-
-            .navbar.scrolled .nav-container {
-                height: 80px;
-            }
-
-            .logo {
-                height: 90px;
-            }
-
-            .navbar.scrolled .logo {
-                height: 60px;
-            }
-
-            .blog-hero {
-                margin-top: 100px;
-                padding: 60px 20px 40px;
-            }
-
-            .blog-filters,
-            .featured-section,
-            .posts-section {
-                padding: 40px 20px;
-            }
-
-            .posts-grid {
-                grid-template-columns: 1fr;
-                gap: 30px;
-            }
-
-            .footer-content {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .featured-title {
-                font-size: 36px;
-            }
-        }
-    </style>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
+    <!-- THEME TOGGLE (Floating Button) -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Alternar modo claro/escuro">
+        <svg class="theme-icon sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2"/>
+            <path d="M12 20v2"/>
+            <path d="m4.93 4.93 1.41 1.41"/>
+            <path d="m17.66 17.66 1.41 1.41"/>
+            <path d="M2 12h2"/>
+            <path d="M20 12h2"/>
+            <path d="m6.34 17.66-1.41 1.41"/>
+            <path d="m19.07 4.93-1.41 1.41"/>
+        </svg>
+        <svg class="theme-icon moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>
+        </svg>
+    </button>
+
     <!-- NAVIGATION -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <ul class="nav-links left">
-                <li><a href="index.html#inicio">Início</a></li>
-                <li><a href="index.html#elenco">Elenco</a></li>
-                <li><a href="index.html#recordes">Recordes</a></li>
+                <li><a href="index.php#inicio">Início</a></li>
+                <li><a href="index.php#elenco">Elenco</a></li>
+                <li><a href="index.php#recordes">Recordes</a></li>
             </ul>
 
             <div class="logo-container">
-                <a href="index.html">
+                <a href="index.php">
                     <img src="https://i.imgur.com/bgExqAD.png" alt="Brasília Basquete" class="logo">
                 </a>
             </div>
 
             <ul class="nav-links right">
-                <li><a href="index.html#história">História</a></li>
-                <li><a href="blog.html" class="active">Canal do Time</a></li>
+                <li><a href="index.php#história">História</a></li>
+                <li><a href="blog.php" class="active">Canal do Time</a></li>
                 <li class="social-links">
-                    <a href="https://www.instagram.com/brasilia.basquete/" target="_blank" aria-label="Instagram">📷</a>
-                    <a href="https://www.tiktok.com/@brasilia.basquete" target="_blank" aria-label="TikTok">🎵</a>
-                    <a href="https://www.youtube.com/@CaixaBrasiliaBasquete" target="_blank" aria-label="YouTube">▶</a>
-                    <a href="https://x.com/brasiliabasquet" target="_blank" aria-label="X/Twitter">✖</a>
+                    <a href="https://www.instagram.com/brasilia.basquete/" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@brasilia.basquete" target="_blank" aria-label="TikTok">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.youtube.com/@CaixaBrasiliaBasquete" target="_blank" aria-label="YouTube">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/>
+                            <path d="m10 15 5-3-5-3z"/>
+                        </svg>
+                    </a>
+                    <a href="https://x.com/brasiliabasquet" target="_blank" aria-label="X/Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4l11.733 16h4.267l-11.733 -16z"/>
+                            <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/>
+                        </svg>
+                    </a>
                 </li>
             </ul>
 
@@ -754,7 +124,13 @@
                     <p class="featured-excerpt">
                         Em uma temporada histórica, o Caixa Brasília Basquete alcançou sua melhor campanha desde o retorno ao NBB, terminando a fase de classificação na quarta posição da tabela. A equipe demonstrou evolução constante e reacendeu a esperança da torcida brasiliense de voltar aos dias de glória.
                     </p>
-                    <a href="#" class="read-more">Leia Mais</a>
+                    <a href="#" class="read-more">
+                        Leia Mais
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 12h14"/>
+                            <path d="m12 5 7 7-7 7"/>
+                        </svg>
+                    </a>
                 </div>
             </article>
         </div>
@@ -913,66 +289,68 @@
             <div class="footer-section">
                 <h3>Navegação</h3>
                 <ul class="footer-links">
-                    <li><a href="index.html#inicio">Início</a></li>
-                    <li><a href="index.html#elenco">Elenco</a></li>
-                    <li><a href="index.html#recordes">Recordes</a></li>
-                    <li><a href="index.html#história">História</a></li>
-                    <li><a href="blog.html">Canal do Time</a></li>
+                    <li><a href="index.php#inicio">Início</a></li>
+                    <li><a href="index.php#elenco">Elenco</a></li>
+                    <li><a href="index.php#recordes">Recordes</a></li>
+                    <li><a href="index.php#história">História</a></li>
+                    <li><a href="blog.php">Canal do Time</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h3>Redes Sociais</h3>
                 <div class="footer-social">
-                    <a href="https://www.instagram.com/brasilia.basquete/" target="_blank" aria-label="Instagram">📷</a>
-                    <a href="https://www.tiktok.com/@brasilia.basquete" target="_blank" aria-label="TikTok">🎵</a>
-                    <a href="https://www.youtube.com/@CaixaBrasiliaBasquete" target="_blank" aria-label="YouTube">▶</a>
-                    <a href="https://x.com/brasiliabasquet" target="_blank" aria-label="X/Twitter">✖</a>
+                    <a href="https://www.instagram.com/brasilia.basquete/" target="_blank" aria-label="Instagram">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@brasilia.basquete" target="_blank" aria-label="TikTok">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.youtube.com/@CaixaBrasiliaBasquete" target="_blank" aria-label="YouTube">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"/>
+                            <path d="m10 15 5-3-5-3z"/>
+                        </svg>
+                    </a>
+                    <a href="https://x.com/brasiliabasquet" target="_blank" aria-label="X/Twitter">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4l11.733 16h4.267l-11.733 -16z"/>
+                            <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772"/>
+                        </svg>
+                    </a>
                 </div>
             </div>
             <div class="footer-section">
                 <h3>Contato</h3>
                 <ul class="footer-links">
-                    <li><a href="/cdn-cgi/l/email-protection#d3a0a6a3bca1a7b693b1a0b1b1b8a7fdb0bcbefdb1a1"><span class="__cf_email__" data-cfemail="e29197928d909687a2809180808996cc818d8fcc8090">[email&#160;protected]</span></a></li>
+                    <li><a href="mailto:suporte@bsbbkt.com.br">suporte@bsbbkt.com.br</a></li>
                 </ul>
             </div>
             <div class="footer-section">
                 <h3>Institucional</h3>
                 <ul class="footer-links">
-                    <li><a href="termos.html">Termos e Condições</a></li>
-                    <li><a href="privacidade.html">Política de Privacidade</a></li>
-                    <li><a href="consentimento.html">Aviso de Consentimento</a></li>
+                    <li><a href="termos.php">Termos e Condições</a></li>
+                    <li><a href="privacidade.php">Política de Privacidade</a></li>
+                    <li><a href="consentimento.php">Aviso de Consentimento</a></li>
                 </ul>
             </div>
         </div>
         <div class="footer-bottom">
             <div class="footer-legal">
-                <a href="termos.html">Termos e Condições</a>
-                <a href="privacidade.html">Política de Privacidade</a>
-                <a href="consentimento.html">Aviso de Consentimento</a>
+                <a href="termos.php">Termos e Condições</a>
+                <a href="privacidade.php">Política de Privacidade</a>
+                <a href="consentimento.php">Aviso de Consentimento</a>
             </div>
             <p class="footer-copyright">© 2025 Caixa Brasília Basquete. Todos os direitos reservados.</p>
         </div>
     </footer>
 
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-        // Navbar scroll effect
-        window.addEventListener('scroll', function() {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-
-        // Filter buttons
-        const filterBtns = document.querySelectorAll('.filter-btn');
-        filterBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                filterBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
-
-        // Load more functionality
-        const loadMoreBtn = document.querySelect
+    <!-- JavaScript -->
+    <script src="assets/js/main.js"></script>
+</body>
+</html>
