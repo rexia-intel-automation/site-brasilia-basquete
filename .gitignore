@@ -1,0 +1,28 @@
+# Database credentials - NEVER commit passwords
+admin/config/db_credentials.php
+
+# SQLite database files (if any remain)
+admin/data/*.db
+
+# PHP temporary files
+*.tmp
+*.temp
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+error_log
+
+# Upload directories
+uploads/*
+!uploads/.gitkeep
