@@ -14,6 +14,11 @@
     <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
+    <!-- CHAT BUTTON (Floating) -->
+    <a href="https://primary-production-55af6.up.railway.app/webhook/532cd781-988a-45b3-a190-fd18a6c999e5/chat" target="_blank" class="chat-button" aria-label="Chat">
+        <img src="https://i.imgur.com/bgExqAD.png" alt="Chat">
+    </a>
+
     <!-- THEME TOGGLE (Floating Button) -->
     <button class="theme-toggle" id="themeToggle" aria-label="Alternar modo claro/escuro">
         <svg class="theme-icon sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

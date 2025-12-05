@@ -525,9 +525,59 @@
                 gap: 40px;
             }
         }
+
+        /* CHAT BUTTON (Floating) */
+        .chat-button {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--primary-blue);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 4px 20px rgba(0, 92, 169, 0.4);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .chat-button:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 30px rgba(0, 92, 169, 0.6);
+        }
+
+        .chat-button img {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 768px) {
+            .chat-button {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+            }
+
+            .chat-button img {
+                width: 40px;
+                height: 40px;
+            }
+        }
     </style>
 </head>
 <body>
+    <!-- CHAT BUTTON (Floating) -->
+    <a href="https://primary-production-55af6.up.railway.app/webhook/532cd781-988a-45b3-a190-fd18a6c999e5/chat" target="_blank" class="chat-button" aria-label="Chat">
+        <img src="https://i.imgur.com/bgExqAD.png" alt="Chat">
+    </a>
+
     <!-- NAVIGATION -->
     <nav class="navbar" id="navbar">
         <div class="nav-container">
