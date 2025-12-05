@@ -15,7 +15,7 @@
 </head>
 <body>
     <!-- CHAT BUTTON (Floating) -->
-    <a href="https://primary-production-55af6.up.railway.app/webhook/532cd781-988a-45b3-a190-fd18a6c999e5/chat" target="_blank" class="chat-button" aria-label="Chat">
+    <a href="https://primary-production-55af6.up.railway.app/webhook/532cd781-988a-45b3-a190-fd18a6c999e5/chat" class="chat-button" aria-label="Chat" onclick="event.preventDefault(); window.open(this.href, 'ChatPopup', 'width=400,height=600,resizable=yes,scrollbars=yes'); return false;">
         <img src="https://i.imgur.com/bgExqAD.png" alt="Chat">
     </a>
 
