@@ -176,8 +176,11 @@ function truncateExcerpt($text, $length = 150) {
             width: 100%;
             max-height: 600px;
             object-fit: cover;
+            object-position: center;
             border-radius: 8px;
             margin-bottom: 3rem;
+            /* Performance optimization */
+            will-change: transform;
         }
 
         .post-content {
@@ -291,6 +294,11 @@ function truncateExcerpt($text, $length = 150) {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 0.5rem;
+            }
+
+            .post-featured-image {
+                max-height: 400px; /* Reduzir altura em mobile */
+                margin-bottom: 2rem;
             }
 
             .related-posts-grid {
@@ -437,7 +445,8 @@ function truncateExcerpt($text, $length = 150) {
         <?php if (!empty($post['featured_image'])): ?>
         <img src="<?php echo htmlspecialchars($post['featured_image']); ?>"
              alt="<?php echo htmlspecialchars($post['title']); ?>"
-             class="post-featured-image">
+             class="post-featured-image"
+             loading="eager">
         <?php endif; ?>
 
         <!-- Excerpt -->
@@ -494,9 +503,12 @@ function truncateExcerpt($text, $length = 150) {
                         <div class="post-image">
                             <?php if (!empty($related['featured_image'])): ?>
                                 <img src="<?php echo htmlspecialchars($related['featured_image']); ?>"
-                                     alt="<?php echo htmlspecialchars($related['title']); ?>">
+                                     alt="<?php echo htmlspecialchars($related['title']); ?>"
+                                     loading="lazy">
                             <?php else: ?>
-                                <img src="https://i.imgur.com/bgExqAD.png" alt="<?php echo htmlspecialchars($related['title']); ?>">
+                                <img src="https://i.imgur.com/bgExqAD.png"
+                                     alt="<?php echo htmlspecialchars($related['title']); ?>"
+                                     loading="lazy">
                             <?php endif; ?>
                             <span class="post-tag"><?php echo htmlspecialchars($related['category_name'] ?? 'Geral'); ?></span>
                         </div>
