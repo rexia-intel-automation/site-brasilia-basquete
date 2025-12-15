@@ -243,7 +243,10 @@ $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                                        class="form-control"
                                        value="<?php echo htmlspecialchars($post['featured_image'] ?? ''); ?>"
                                        placeholder="https://exemplo.com/imagem.jpg">
-                                <small>URL completa da imagem de destaque</small>
+                                <small style="display: block; margin-top: 0.5rem; color: var(--text-secondary);">
+                                    <strong>Recomendado:</strong> 1200 x 630 pixels (JPG até 500KB)<br>
+                                    Proporção ideal: Landscape (horizontal) para melhor visualização em blog e redes sociais
+                                </small>
                             </div>
 
                             <?php if (!empty($post['featured_image'])): ?>

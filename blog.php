@@ -185,9 +185,12 @@ function truncateExcerpt($text, $length = 150) {
                 <div class="featured-image">
                     <?php if (!empty($featured_post['featured_image'])): ?>
                         <img src="<?php echo htmlspecialchars($featured_post['featured_image']); ?>"
-                             alt="<?php echo htmlspecialchars($featured_post['title']); ?>">
+                             alt="<?php echo htmlspecialchars($featured_post['title']); ?>"
+                             loading="eager">
                     <?php else: ?>
-                        <img src="https://i.imgur.com/bgExqAD.png" alt="<?php echo htmlspecialchars($featured_post['title']); ?>">
+                        <img src="https://i.imgur.com/bgExqAD.png"
+                             alt="<?php echo htmlspecialchars($featured_post['title']); ?>"
+                             loading="eager">
                     <?php endif; ?>
                     <span class="featured-tag">Destaque</span>
                 </div>
@@ -224,9 +227,12 @@ function truncateExcerpt($text, $length = 150) {
                             <div class="post-image">
                                 <?php if (!empty($post['featured_image'])): ?>
                                     <img src="<?php echo htmlspecialchars($post['featured_image']); ?>"
-                                         alt="<?php echo htmlspecialchars($post['title']); ?>">
+                                         alt="<?php echo htmlspecialchars($post['title']); ?>"
+                                         loading="lazy">
                                 <?php else: ?>
-                                    <img src="https://i.imgur.com/bgExqAD.png" alt="<?php echo htmlspecialchars($post['title']); ?>">
+                                    <img src="https://i.imgur.com/bgExqAD.png"
+                                         alt="<?php echo htmlspecialchars($post['title']); ?>"
+                                         loading="lazy">
                                 <?php endif; ?>
                                 <span class="post-tag"><?php echo htmlspecialchars($post['category_name'] ?? 'Geral'); ?></span>
                             </div>
