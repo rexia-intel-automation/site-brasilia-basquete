@@ -10,8 +10,8 @@
 
 return [
     'host' => 'localhost', // Host do banco de dados
-    'database' => 'u568843907_brasiliabasque', // Nome do banco
-    'username' => 'u568843907_bsbbkt', // Usuário do banco
+    'database' => 'u568843907_blogbasquete', // Nome do banco
+    'username' => 'u568843907_basquete', // Usuário do banco
     'password' => '', // ADICIONE SUA SENHA AQUI
     'charset' => 'utf8mb4'
 ];
