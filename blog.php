@@ -1,3 +1,67 @@
+<?php
+require_once 'admin/config/database.php';
+
+$db = getDB();
+
+// Get filter parameters
+$filter_category = $_GET['category'] ?? '';
+
+// Get categories for filters
+$categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
+
+// Get featured post
+$featured_query = "
+    SELECT p.*, c.name as category_name
+    FROM posts p
+    LEFT JOIN categories c ON p.category_id = c.id
+    WHERE p.published = 1 AND p.is_featured = 1
+    ORDER BY p.created_at DESC
+    LIMIT 1
+";
+$stmt = $db->query($featured_query);
+$featured_post = $stmt->fetch();
+
+// Get regular posts (excluding featured)
+$where_conditions = ["p.published = 1"];
+$params = [];
+
+if ($filter_category) {
+    $where_conditions[] = "p.category_id = ?";
+    $params[] = $filter_category;
+}
+
+if ($featured_post) {
+    $where_conditions[] = "p.id != ?";
+    $params[] = $featured_post['id'];
+}
+
+$where_clause = "WHERE " . implode(" AND ", $where_conditions);
+
+$posts_query = "
+    SELECT p.*, c.name as category_name
+    FROM posts p
+    LEFT JOIN categories c ON p.category_id = c.id
+    $where_clause
+    ORDER BY p.created_at DESC
+    LIMIT 9
+";
+
+$stmt = $db->prepare($posts_query);
+$stmt->execute($params);
+$posts = $stmt->fetchAll();
+
+// Helper function to format date
+function formatPostDate($date) {
+    $timestamp = strtotime($date);
+    return date('d M Y', $timestamp);
+}
+
+// Helper function to truncate excerpt
+function truncateExcerpt($text, $length = 150) {
+    if (strlen($text) <= $length) return $text;
+    return substr($text, 0, $length) . '...';
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -102,34 +166,41 @@
     <!-- FILTERS -->
     <section class="blog-filters">
         <div class="filters-container">
-            <button class="filter-btn active">Todas</button>
-            <button class="filter-btn">Notícias</button>
-            <button class="filter-btn">Bastidores</button>
-            <button class="filter-btn">Entrevistas</button>
-            <button class="filter-btn">Jogos</button>
-            <button class="filter-btn">Elenco</button>
+            <a href="blog.php" class="filter-btn <?php echo empty($filter_category) ? 'active' : ''; ?>">Todas</a>
+            <?php foreach ($categories as $cat): ?>
+                <a href="blog.php?category=<?php echo $cat['id']; ?>"
+                   class="filter-btn <?php echo $filter_category == $cat['id'] ? 'active' : ''; ?>">
+                    <?php echo htmlspecialchars($cat['name']); ?>
+                </a>
+            <?php endforeach; ?>
         </div>
     </section>
 
     <!-- FEATURED POST -->
+    <?php if ($featured_post): ?>
     <section class="featured-section">
         <div class="featured-container">
             <div class="section-label">Destaque</div>
             <article class="featured-post">
                 <div class="featured-image">
-                    <img src="https://i.imgur.com/qF1dLbN.jpeg" alt="Temporada Monumental">
+                    <?php if (!empty($featured_post['featured_image'])): ?>
+                        <img src="<?php echo htmlspecialchars($featured_post['featured_image']); ?>"
+                             alt="<?php echo htmlspecialchars($featured_post['title']); ?>">
+                    <?php else: ?>
+                        <img src="https://i.imgur.com/bgExqAD.png" alt="<?php echo htmlspecialchars($featured_post['title']); ?>">
+                    <?php endif; ?>
                     <span class="featured-tag">Destaque</span>
                 </div>
                 <div class="featured-content">
                     <div class="featured-meta">
-                        <span>28 Nov 2025</span>
-                        <span>Notícias</span>
+                        <span><?php echo formatPostDate($featured_post['created_at']); ?></span>
+                        <span><?php echo htmlspecialchars($featured_post['category_name'] ?? 'Sem categoria'); ?></span>
                     </div>
-                    <h2 class="featured-title">Brasília Basquete Conquista 4º Lugar na Fase de Classificação</h2>
+                    <h2 class="featured-title"><?php echo htmlspecialchars($featured_post['title']); ?></h2>
                     <p class="featured-excerpt">
-                        Em uma temporada histórica, o Caixa Brasília Basquete alcançou sua melhor campanha desde o retorno ao NBB, terminando a fase de classificação na quarta posição da tabela. A equipe demonstrou evolução constante e reacendeu a esperança da torcida brasiliense de voltar aos dias de glória.
+                        <?php echo htmlspecialchars($featured_post['excerpt'] ?? truncateExcerpt(strip_tags($featured_post['content']), 200)); ?>
                     </p>
-                    <a href="#" class="read-more">
+                    <a href="post.php?slug=<?php echo urlencode($featured_post['slug']); ?>" class="read-more">
                         Leia Mais
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M5 12h14"/>
@@ -140,151 +211,49 @@
             </article>
         </div>
     </section>
+    <?php endif; ?>
 
     <!-- POSTS GRID -->
     <section class="posts-section">
         <div class="posts-container">
             <div class="section-label">Últimas Notícias</div>
             <div class="posts-grid">
-                <!-- Post 1 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://i.imgur.com/RvYkpM1.jpeg" alt="Título NBB 2009/2010">
-                        <span class="post-tag">História</span>
+                <?php if (!empty($posts)): ?>
+                    <?php foreach ($posts as $post): ?>
+                        <a href="post.php?slug=<?php echo urlencode($post['slug']); ?>" class="post-card">
+                            <div class="post-image">
+                                <?php if (!empty($post['featured_image'])): ?>
+                                    <img src="<?php echo htmlspecialchars($post['featured_image']); ?>"
+                                         alt="<?php echo htmlspecialchars($post['title']); ?>">
+                                <?php else: ?>
+                                    <img src="https://i.imgur.com/bgExqAD.png" alt="<?php echo htmlspecialchars($post['title']); ?>">
+                                <?php endif; ?>
+                                <span class="post-tag"><?php echo htmlspecialchars($post['category_name'] ?? 'Geral'); ?></span>
+                            </div>
+                            <div class="post-content">
+                                <div class="post-meta">
+                                    <span><?php echo formatPostDate($post['created_at']); ?></span>
+                                </div>
+                                <h3 class="post-title"><?php echo htmlspecialchars($post['title']); ?></h3>
+                                <p class="post-excerpt">
+                                    <?php echo htmlspecialchars($post['excerpt'] ?? truncateExcerpt(strip_tags($post['content']))); ?>
+                                </p>
+                            </div>
+                        </a>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div style="grid-column: 1 / -1; text-align: center; padding: 3rem;">
+                        <p style="opacity: 0.7; font-size: 1.1rem;">Nenhum post encontrado nesta categoria.</p>
+                        <a href="blog.php" style="display: inline-block; margin-top: 1rem; color: var(--primary-color);">Ver todos os posts</a>
                     </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>27 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">Relembre a Conquista do Primeiro Título do NBB</h3>
-                        <p class="post-excerpt">Uma olhada nostálgica na campanha histórica de 2009/2010 que marcou a primeira conquista do Brasília Basquete no Novo Basquete Brasil.</p>
-                    </div>
-                </a>
-
-                <!-- Post 2 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://i.imgur.com/tweN5FJ.jpeg" alt="Brunão">
-                        <span class="post-tag">Elenco</span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>26 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">Brunão: A Força do Garrafão do Brasília</h3>
-                        <p class="post-excerpt">Conheça mais sobre o pivô que tem sido fundamental na campanha da equipe com sua presença física e liderança dentro de quadra.</p>
-                    </div>
-                </a>
-
-                <!-- Post 3 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://i.imgur.com/NZ9MQQH.jpeg" alt="Mosquito">
-                        <span class="post-tag">Entrevista</span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>25 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">Mosquito Fala Sobre a Temporada e Objetivos</h3>
-                        <p class="post-excerpt">Em entrevista exclusiva, o armador #1 revela os bastidores da preparação e as expectativas para os playoffs do NBB.</p>
-                    </div>
-                </a>
-
-                <!-- Post 4 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://assets.zyrosite.com/YZ9EnnVP4kFWg320/brasiilia-campeaio-trofeiu_2010-2011-Aq2GM3Wqe3urvENK.jpg" alt="Bicampeonato">
-                        <span class="post-tag">História</span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>24 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">2010/2011: O Bicampeonato no Nilson Nelson</h3>
-                        <p class="post-excerpt">Reviva os momentos épicos da segunda conquista consecutiva do NBB, com mais de 16 mil torcedores presentes na final.</p>
-                    </div>
-                </a>
-
-                <!-- Post 5 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://i.imgur.com/DsFTwbS.jpeg" alt="Crescenzi">
-                        <span class="post-tag">Jogos</span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>23 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">Crescenzi: Destaque na Vitória Sobre Minas</h3>
-                        <p class="post-excerpt">O ala-armador #2 foi decisivo com 21 pontos e 7 assistências na importante vitória fora de casa contra o Minas Tênis Clube.</p>
-                    </div>
-                </a>
-
-                <!-- Post 6 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://i.imgur.com/2QnSGXY.png" alt="Giovannoni">
-                        <span class="post-tag">Recordes</span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>22 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">Giovannoni: A Lenda dos 5 Mil Pontos</h3>
-                        <p class="post-excerpt">Relembre a trajetória de Guilherme Giovannoni, maior pontuador da história do Brasília Basquete no NBB com 5.072 pontos.</p>
-                    </div>
-                </a>
-
-                <!-- Post 7 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://i.imgur.com/Owsi001.jpeg" alt="Corvalán">
-                        <span class="post-tag">Bastidores</span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>21 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">Nos Bastidores do Treino com Corvalán</h3>
-                        <p class="post-excerpt">Acompanhe um dia de treino intenso do ala-armador argentino e descubra os segredos da preparação física da equipe.</p>
-                    </div>
-                </a>
-
-                <!-- Post 8 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://i.imgur.com/faxcxL3.jpeg" alt="Tricampeonato">
-                        <span class="post-tag">História</span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>20 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">2011/2012: O Tricampeonato Histórico</h3>
-                        <p class="post-excerpt">A conquista que consolidou o Brasília como potência nacional, com a base mantida e vitória sobre São José na final.</p>
-                    </div>
-                </a>
-
-                <!-- Post 9 -->
-                <a href="#" class="post-card">
-                    <div class="post-image">
-                        <img src="https://i.imgur.com/QcpuFl5.jpeg" alt="Beller">
-                        <span class="post-tag">Elenco</span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-meta">
-                            <span>19 Nov 2025</span>
-                        </div>
-                        <h3 class="post-title">Beller #77: Versatilidade e Energia</h3>
-                        <p class="post-excerpt">O ala-pivô se destaca pela versatilidade em ambas as extremidades da quadra e energia contagiante nos treinos e jogos.</p>
-                    </div>
-                </a>
+                <?php endif; ?>
             </div>
 
+            <?php if (count($posts) >= 9): ?>
             <div class="load-more">
                 <button class="load-more-btn">Carregar Mais Notícias</button>
             </div>
+            <?php endif; ?>
         </div>
     </section>
 
