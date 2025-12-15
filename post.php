@@ -119,6 +119,7 @@ function truncateExcerpt($text, $length = 150) {
 
         .post-breadcrumb {
             display: flex;
+            flex-wrap: wrap;
             gap: 0.5rem;
             font-size: 0.9rem;
             color: var(--text-secondary);
@@ -228,6 +229,7 @@ function truncateExcerpt($text, $length = 150) {
 
         .post-share {
             display: flex;
+            flex-wrap: wrap;
             align-items: center;
             gap: 1rem;
             padding: 2rem 0;
@@ -281,6 +283,24 @@ function truncateExcerpt($text, $length = 150) {
             gap: 2rem;
         }
 
+        /* Responsive iframes (videos, embeds) */
+        .post-content iframe {
+            max-width: 100%;
+            height: auto;
+            aspect-ratio: 16 / 9;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .post-content table {
+            display: block;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
         @media (max-width: 768px) {
             .post-single {
                 padding: 6rem 1.5rem 3rem;
@@ -297,12 +317,64 @@ function truncateExcerpt($text, $length = 150) {
             }
 
             .post-featured-image {
-                max-height: 400px; /* Reduzir altura em mobile */
+                max-height: 400px;
                 margin-bottom: 2rem;
+            }
+
+            .post-content {
+                font-size: 1rem; /* Reduzir de 1.1rem para 1rem em mobile */
+                line-height: 1.7;
+            }
+
+            .post-breadcrumb {
+                font-size: 0.85rem;
+            }
+
+            .post-share {
+                padding: 1.5rem 0;
+            }
+
+            .post-share-title {
+                width: 100%;
+                margin-bottom: 0.5rem;
             }
 
             .related-posts-grid {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .post-single h1 {
+                font-size: 2rem; /* Ainda menor em mobile pequeno */
+                line-height: 1.2;
+            }
+
+            .post-single {
+                padding: 5rem 1rem 2rem;
+            }
+
+            .post-content {
+                font-size: 0.95rem;
+            }
+
+            .post-breadcrumb {
+                font-size: 0.8rem;
+            }
+
+            .post-category-badge {
+                font-size: 0.8rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .share-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            .share-btn svg {
+                width: 18px;
+                height: 18px;
             }
         }
     </style>
