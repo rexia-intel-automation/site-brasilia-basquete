@@ -9,29 +9,29 @@ function getBreadcrumbs() {
     $breadcrumbs = [];
 
     // Always start with Dashboard
-    $breadcrumbs[] = ['title' => 'Dashboard', 'url' => '/admin/index.php'];
+    $breadcrumbs[] = ['title' => 'Dashboard', 'url' => '/admin/index'];
 
     // Determine current section
     if (strpos($path, 'players/') !== false) {
-        $breadcrumbs[] = ['title' => 'Jogadores', 'url' => '/admin/players/index.php'];
+        $breadcrumbs[] = ['title' => 'Jogadores', 'url' => '/admin/players/index'];
 
         if (strpos($path, 'form.php') !== false) {
             $isEdit = isset($_GET['id']);
             $breadcrumbs[] = ['title' => $isEdit ? 'Editar Jogador' : 'Novo Jogador', 'url' => null];
         }
     } elseif (strpos($path, 'posts/') !== false) {
-        $breadcrumbs[] = ['title' => 'Posts', 'url' => '/admin/posts/index.php'];
+        $breadcrumbs[] = ['title' => 'Posts', 'url' => '/admin/posts/index'];
 
         if (strpos($path, 'form.php') !== false) {
             $isEdit = isset($_GET['id']);
             $breadcrumbs[] = ['title' => $isEdit ? 'Editar Post' : 'Novo Post', 'url' => null];
         }
     } elseif (strpos($path, 'categories/') !== false) {
-        $breadcrumbs[] = ['title' => 'Categorias', 'url' => '/admin/categories/index.php'];
+        $breadcrumbs[] = ['title' => 'Categorias', 'url' => '/admin/categories/index'];
     } elseif (strpos($path, 'media/') !== false) {
-        $breadcrumbs[] = ['title' => 'Galeria', 'url' => '/admin/media/index.php'];
+        $breadcrumbs[] = ['title' => 'Galeria', 'url' => '/admin/media/index'];
     } elseif (strpos($path, 'settings/') !== false) {
-        $breadcrumbs[] = ['title' => 'Configurações', 'url' => '/admin/settings/index.php'];
+        $breadcrumbs[] = ['title' => 'Configurações', 'url' => '/admin/settings/index'];
     }
 
     return $breadcrumbs;

@@ -9,7 +9,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     $id = (int)$_GET['id'];
     $stmt = $db->prepare("DELETE FROM posts WHERE id = ?");
     $stmt->execute([$id]);
-    header('Location: index.php?msg=deleted');
+    header('Location: index?msg=deleted');
     exit;
 }
 
@@ -78,7 +78,7 @@ $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <h1>Posts do Blog</h1>
                 <p>Gerencie as publicações do blog</p>
             </div>
-            <a href="form.php" class="btn btn-primary">
+            <a href="form" class="btn btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="5" x2="12" y2="19"/>
                     <line x1="5" y1="12" x2="19" y2="12"/>
@@ -123,7 +123,7 @@ $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                     </div>
                     <button type="submit" class="btn btn-secondary">Filtrar</button>
                     <?php if ($search || $filter_category || $filter_status !== ''): ?>
-                        <a href="index.php" class="btn btn-outline">Limpar</a>
+                        <a href="index" class="btn btn-outline">Limpar</a>
                     <?php endif; ?>
                 </div>
             </form>
@@ -166,13 +166,13 @@ $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                             <td><?php echo date('d/m/Y', strtotime($post['created_at'])); ?></td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="form.php?id=<?php echo $post['id']; ?>" class="btn btn-sm btn-secondary" title="Editar">
+                                    <a href="form?id=<?php echo $post['id']; ?>" class="btn btn-sm btn-secondary" title="Editar">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
                                             <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
                                         </svg>
                                     </a>
-                                    <a href="index.php?action=delete&id=<?php echo $post['id']; ?>"
+                                    <a href="index?action=delete&id=<?php echo $post['id']; ?>"
                                        class="btn btn-sm btn-danger"
                                        title="Excluir"
                                        onclick="return confirm('Tem certeza que deseja excluir este post?')">
@@ -194,7 +194,7 @@ $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                                     <polyline points="14 2 14 8 20 8"/>
                                 </svg>
                                 <p style="opacity: 0.7;">Nenhum post encontrado</p>
-                                <a href="form.php" class="btn btn-primary" style="margin-top: 1rem;">Criar Primeiro Post</a>
+                                <a href="form" class="btn btn-primary" style="margin-top: 1rem;">Criar Primeiro Post</a>
                             </td>
                         </tr>
                         <?php endif; ?>

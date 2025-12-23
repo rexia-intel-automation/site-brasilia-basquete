@@ -9,7 +9,7 @@ if (isset($_GET['delete'])) {
     $id = (int)$_GET['delete'];
     $stmt = $db->prepare("DELETE FROM players WHERE id = ?");
     $stmt->execute([$id]);
-    header('Location: index.php?msg=deleted');
+    header('Location: index?msg=deleted');
     exit;
 }
 
@@ -37,7 +37,7 @@ $players = $db->query("SELECT * FROM players ORDER BY number ASC")->fetchAll();
                 <h1>Jogadores</h1>
                 <p>Gerencie o elenco do Brasília Basquete</p>
             </div>
-            <a href="form.php" class="btn btn-primary">
+            <a href="form" class="btn btn-primary">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M5 12h14"/>
                     <path d="M12 5v14"/>
@@ -95,7 +95,7 @@ $players = $db->query("SELECT * FROM players ORDER BY number ASC")->fetchAll();
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="form.php?id=<?php echo $player['id']; ?>" class="btn-icon" title="Editar">
+                                    <a href="form?id=<?php echo $player['id']; ?>" class="btn-icon" title="Editar">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
                                         </svg>

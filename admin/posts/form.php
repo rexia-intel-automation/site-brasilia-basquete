@@ -15,7 +15,7 @@ if ($is_edit) {
     $post = $stmt->fetch();
 
     if (!$post) {
-        header('Location: index.php');
+        header('Location: index');
         exit;
     }
 }
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ]);
         }
 
-        header('Location: index.php?msg=success');
+        header('Location: index?msg=success');
         exit;
     } catch (PDOException $e) {
         $error = "Erro ao salvar post: " . $e->getMessage();
@@ -98,7 +98,7 @@ $categories = $db->query("SELECT * FROM categories ORDER BY name")->fetchAll();
                 <h1><?php echo $is_edit ? 'Editar' : 'Novo'; ?> Post</h1>
                 <p><?php echo $is_edit ? 'Atualize as informações do post' : 'Crie uma nova publicação para o blog'; ?></p>
             </div>
-            <a href="index.php" class="btn btn-outline">
+            <a href="index" class="btn btn-outline">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="m12 19-7-7 7-7"/>
                     <path d="M19 12H5"/>

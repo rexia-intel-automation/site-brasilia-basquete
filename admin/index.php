@@ -121,7 +121,7 @@ $recent_players = $db->query("
             <div class="content-section">
                 <div class="section-header">
                     <h2>Posts Recentes</h2>
-                    <a href="posts/index.php" class="btn btn-sm btn-outline">Ver Todos</a>
+                    <a href="posts/index" class="btn btn-sm btn-outline">Ver Todos</a>
                 </div>
                 <div class="table-responsive">
                     <table class="table">
@@ -167,7 +167,7 @@ $recent_players = $db->query("
             <div class="content-section">
                 <div class="section-header">
                     <h2>Jogadores Recentes</h2>
-                    <a href="players/index.php" class="btn btn-sm btn-outline">Ver Todos</a>
+                    <a href="players/index" class="btn btn-sm btn-outline">Ver Todos</a>
                 </div>
                 <div class="table-responsive">
                     <table class="table">

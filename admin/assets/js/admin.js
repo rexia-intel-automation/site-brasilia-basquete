@@ -278,15 +278,15 @@ function initKeyboardShortcuts() {
             switch(e.key.toLowerCase()) {
                 case 'h':
                     e.preventDefault();
-                    window.location.href = 'index.php';
+                    window.location.href = 'index';
                     break;
                 case 'p':
                     e.preventDefault();
-                    window.location.href = 'posts/index.php';
+                    window.location.href = 'posts/index';
                     break;
                 case 'j':
                     e.preventDefault();
-                    window.location.href = 'players/index.php';
+                    window.location.href = 'players/index';
                     break;
                 case 'k':
                     e.preventDefault();
