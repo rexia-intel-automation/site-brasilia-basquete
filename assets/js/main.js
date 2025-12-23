@@ -524,8 +524,33 @@ function initMobileMenu() {
 
     if (!menuToggle || !navLinksLeft || !navLinksRight) return;
 
-    // Combine both nav-links for mobile
-    const mobileMenu = navLinksLeft;
+    // Create unified mobile menu container
+    let mobileMenu = document.querySelector('.mobile-menu-unified');
+    if (!mobileMenu) {
+        mobileMenu = document.createElement('ul');
+        mobileMenu.className = 'nav-links mobile-menu-unified';
+
+        // Clone links from LEFT menu (Início, Elenco, Recordes)
+        const leftLinks = navLinksLeft.querySelectorAll('li:not(.social-links)');
+        leftLinks.forEach(li => {
+            mobileMenu.appendChild(li.cloneNode(true));
+        });
+
+        // Clone links from RIGHT menu (História, Canal do Time)
+        const rightLinks = navLinksRight.querySelectorAll('li:not(.social-links)');
+        rightLinks.forEach(li => {
+            mobileMenu.appendChild(li.cloneNode(true));
+        });
+
+        // Clone social links from RIGHT menu
+        const socialLinks = navLinksRight.querySelector('.social-links');
+        if (socialLinks) {
+            mobileMenu.appendChild(socialLinks.cloneNode(true));
+        }
+
+        // Insert mobile menu into DOM
+        document.body.appendChild(mobileMenu);
+    }
 
     function openMenu() {
         menuToggle.classList.add('active');
