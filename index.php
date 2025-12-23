@@ -105,16 +105,19 @@
         <h2 class="sponsors-title">Nossos Patrocinadores</h2>
         <div class="sponsors-grid">
             <div class="sponsor-logo">
-                <img src="https://caixabrasiliabasquete.com.br/wp-content/uploads/2024/12/Copia-de-caixa_azul-1024x232.png" alt="Caixa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Caixa_Econ%C3%B4mica_Federal_logo.svg" alt="Caixa">
             </div>
             <div class="sponsor-logo">
-                <img src="https://caixabrasiliabasquete.com.br/wp-content/uploads/2024/12/Copia-de-jade-horizontal-1-1024x319.png" alt="Jade Hotel">
+                <img src="https://media.omnibees.com/BEImages/23965.png" alt="Jade Hotel">
             </div>
             <div class="sponsor-logo">
                 <img src="https://imgur.com/NFE2P10.png" alt="Heavenly International School">
             </div>
             <div class="sponsor-logo">
                 <img src="https://i.imgur.com/eFarzCB.png" alt="Gráfica Movimento">
+            </div>
+            <div class="sponsor-logo">
+                <img src="https://i.imgur.com/LmagZGL.png" alt="Governo Federal">
             </div>
         </div>
     </section>
@@ -361,16 +364,19 @@
         <h2 class="sponsors-title">Apoio</h2>
         <div class="sponsors-grid">
             <div class="sponsor-logo">
-                <img src="https://caixabrasiliabasquete.com.br/wp-content/uploads/2024/12/Copia-de-caixa_azul-1024x232.png" alt="Caixa">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/Caixa_Econ%C3%B4mica_Federal_logo.svg" alt="Caixa">
             </div>
             <div class="sponsor-logo">
-                <img src="https://caixabrasiliabasquete.com.br/wp-content/uploads/2024/12/Copia-de-jade-horizontal-1-1024x319.png" alt="Jade Hotel">
+                <img src="https://media.omnibees.com/BEImages/23965.png" alt="Jade Hotel">
             </div>
             <div class="sponsor-logo">
                 <img src="https://imgur.com/NFE2P10.png" alt="Heavenly">
             </div>
             <div class="sponsor-logo">
                 <img src="https://i.imgur.com/eFarzCB.png" alt="Gráfica Movimento">
+            </div>
+            <div class="sponsor-logo">
+                <img src="https://i.imgur.com/LmagZGL.png" alt="Governo Federal">
             </div>
         </div>
     </section>
