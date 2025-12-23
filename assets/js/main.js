@@ -356,6 +356,11 @@ function initCarousel() {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
         isDragging = true;
+
+        // Pausa a animação automática durante o touch
+        if (isAutoMode) {
+            track.style.animationPlayState = 'paused';
+        }
     }, { passive: true });
 
     track.addEventListener('touchmove', (e) => {
@@ -382,6 +387,27 @@ function initCarousel() {
                     // Swipe right = prev
                     selectCard(currentIndex - 1);
                 }
+            } else {
+                // Swipe muito curto - retoma animação se estava em auto mode
+                if (isAutoMode) {
+                    track.style.animationPlayState = 'running';
+                }
+            }
+        } else {
+            // Swipe vertical - retoma animação se estava em auto mode
+            if (isAutoMode) {
+                track.style.animationPlayState = 'running';
+            }
+        }
+    });
+
+    // Cancela o touch se o usuário sair da área
+    track.addEventListener('touchcancel', () => {
+        if (isDragging) {
+            isDragging = false;
+            // Retoma animação se estava em auto mode
+            if (isAutoMode) {
+                track.style.animationPlayState = 'running';
             }
         }
     });

@@ -523,6 +523,9 @@ body {
 .carousel-track {
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     contain: layout style paint;
+    touch-action: pan-y;  /* Permite scroll vertical da página enquanto captura swipe horizontal */
+    user-select: none;    /* Previne seleção de texto durante swipe */
+    -webkit-user-drag: none;  /* Previne drag de imagens no iOS */
 }
 
 .player-card {
