@@ -150,47 +150,76 @@ function initCarousel() {
 
     if (!track) return;
 
-    let isPaused = false;
+    let currentIndex = 0;
+    let selectedCard = null;
+    const cardWidth = 310; // 280px card + 30px gap
 
-    // Previous button
+    function centerCard(index) {
+        const offset = -index * cardWidth;
+        track.style.animation = 'none';
+        track.style.transform = `translateX(${offset}px)`;
+    }
+
+    function selectCard(card, index) {
+        // Remove seleção anterior
+        if (selectedCard) {
+            selectedCard.classList.remove('selected');
+        }
+
+        // Adiciona nova seleção
+        card.classList.add('selected');
+        selectedCard = card;
+        currentIndex = index;
+
+        // Centraliza o card
+        centerCard(index);
+    }
+
+    function resetCarousel() {
+        if (selectedCard) {
+            selectedCard.classList.remove('selected');
+            selectedCard = null;
+        }
+        track.style.animation = '';
+        track.style.transform = '';
+    }
+
+    // Previous button - navega para o card anterior
     if (prevBtn) {
         prevBtn.addEventListener('click', () => {
-            track.style.animationPlayState = 'paused';
-            isPaused = true;
-            setTimeout(() => {
-                if (isPaused) {
-                    track.style.animationPlayState = 'running';
-                    isPaused = false;
-                }
-            }, 3000);
+            const cards = Array.from(track.querySelectorAll('.player-card'));
+            const totalCards = Math.floor(cards.length / 2); // Metade porque temos duplicados
+
+            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
+            selectCard(cards[currentIndex], currentIndex);
         });
     }
 
-    // Next button
+    // Next button - navega para o próximo card
     if (nextBtn) {
         nextBtn.addEventListener('click', () => {
-            track.style.animationPlayState = 'paused';
-            isPaused = true;
-            setTimeout(() => {
-                if (isPaused) {
-                    track.style.animationPlayState = 'running';
-                    isPaused = false;
-                }
-            }, 3000);
+            const cards = Array.from(track.querySelectorAll('.player-card'));
+            const totalCards = Math.floor(cards.length / 2); // Metade porque temos duplicados
+
+            currentIndex = (currentIndex + 1) % totalCards;
+            selectCard(cards[currentIndex], currentIndex);
         });
     }
 
-    // Pause on hover
-    track.addEventListener('mouseenter', () => {
-        if (!isPaused) {
-            track.style.animationPlayState = 'paused';
+    // Click em um card para selecioná-lo
+    track.addEventListener('click', (e) => {
+        const card = e.target.closest('.player-card');
+        if (card) {
+            e.preventDefault();
+            const cards = Array.from(track.querySelectorAll('.player-card'));
+            const index = cards.indexOf(card) % Math.floor(cards.length / 2);
+            selectCard(card, index);
         }
     });
 
-    track.addEventListener('mouseleave', () => {
-        if (!isPaused) {
-            track.style.animationPlayState = 'running';
-        }
+    // Double click para voltar ao modo automático
+    track.addEventListener('dblclick', () => {
+        resetCarousel();
     });
 }
 
