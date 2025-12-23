@@ -147,58 +147,175 @@ function initCarousel() {
     const track = document.getElementById('carouselTrack');
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
+    const dotsContainer = document.getElementById('carouselDots');
 
     if (!track) return;
 
     let currentIndex = 0;
     let selectedCard = null;
     let isAutoMode = true;
+    let autoModeTimeout = null;
+    let touchStartX = 0;
+    let touchEndX = 0;
+    let touchStartY = 0;
+    let touchEndY = 0;
+    let isDragging = false;
 
     function getCards() {
         const allCards = Array.from(track.querySelectorAll('.player-card'));
-        // Retorna apenas a primeira metade (cards originais, sem duplicados)
         return allCards.slice(0, Math.floor(allCards.length / 2));
     }
 
-    function centerCard(index) {
+    function getCardDimensions() {
         const cards = getCards();
-        const cardWidth = 280 + 30; // largura + gap
-        const containerWidth = track.parentElement.offsetWidth;
-        const offset = (containerWidth / 2) - (cardWidth / 2) - (index * cardWidth);
+        if (cards.length === 0) return { width: 280, gap: 30 };
 
-        track.style.animation = 'none';
-        track.style.transform = `translateX(${offset}px)`;
-        track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        const firstCard = cards[0];
+        const cardWidth = firstCard.getBoundingClientRect().width;
+        const computedStyle = window.getComputedStyle(track);
+        const gap = parseFloat(computedStyle.gap) || 30;
+
+        return { width: cardWidth, gap: gap };
     }
 
-    function selectCard(index) {
+    function createDots() {
+        if (!dotsContainer) return;
+
         const cards = getCards();
+        dotsContainer.innerHTML = '';
 
-        // Garante que o índice está dentro dos limites
-        index = ((index % cards.length) + cards.length) % cards.length;
+        cards.forEach((_, index) => {
+            const dot = document.createElement('button');
+            dot.className = 'carousel-dot';
+            dot.setAttribute('aria-label', `Ir para jogador ${index + 1}`);
 
-        // Remove seleção anterior de todos os cards
+            if (index === 0) {
+                dot.classList.add('active');
+            }
+
+            dot.addEventListener('click', () => {
+                selectCard(index);
+            });
+
+            dotsContainer.appendChild(dot);
+        });
+    }
+
+    function updateDots() {
+        if (!dotsContainer) return;
+
+        const dots = dotsContainer.querySelectorAll('.carousel-dot');
+        dots.forEach((dot, index) => {
+            if (index === currentIndex) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+    }
+
+    function centerCard(index, skipTransition = false) {
+        const cards = getCards();
+        const { width, gap } = getCardDimensions();
+        const cardWidth = width + gap;
+        const containerWidth = track.parentElement.offsetWidth;
+        const offset = (containerWidth / 2) - (width / 2) - (index * cardWidth);
+
+        track.style.animation = 'none';
+        if (skipTransition) {
+            track.style.transition = 'none';
+        } else {
+            track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+        }
+        track.style.transform = `translateX(${offset}px)`;
+    }
+
+    function selectCard(targetIndex) {
+        const cards = getCards();
+        const totalCards = cards.length;
+
+        // Detecta transição primeiro <-> último para loop seamless
+        if (currentIndex === 0 && targetIndex === -1) {
+            // Primeiro -> Último
+            jumpToCardSeamless(totalCards - 1, 'prev');
+            return;
+        } else if (currentIndex === totalCards - 1 && targetIndex === totalCards) {
+            // Último -> Primeiro
+            jumpToCardSeamless(0, 'next');
+            return;
+        }
+
+        // Normaliza índice
+        const normalizedIndex = ((targetIndex % totalCards) + totalCards) % totalCards;
+
+        // Remove seleção anterior
         track.querySelectorAll('.player-card').forEach(c => {
             c.classList.remove('selected');
         });
 
-        // Adiciona seleção ao card atual e seu duplicado
-        const card = cards[index];
+        // Adiciona seleção ao card e duplicado
+        const card = cards[normalizedIndex];
         card.classList.add('selected');
 
-        // Também adiciona ao duplicado
         const allCards = Array.from(track.querySelectorAll('.player-card'));
-        const duplicateIndex = index + cards.length;
+        const duplicateIndex = normalizedIndex + totalCards;
         if (allCards[duplicateIndex]) {
             allCards[duplicateIndex].classList.add('selected');
         }
 
         selectedCard = card;
-        currentIndex = index;
+        currentIndex = normalizedIndex;
         isAutoMode = false;
 
-        // Centraliza o card
-        centerCard(index);
+        centerCard(normalizedIndex);
+        updateDots();
+        startAutoModeTimer();
+    }
+
+    function jumpToCardSeamless(targetIndex, direction) {
+        const cards = getCards();
+        const totalCards = cards.length;
+
+        // 1. Vai para o duplicado sem transição
+        const duplicateOffset = direction === 'next' ? -totalCards : totalCards;
+        centerCard(currentIndex + duplicateOffset, true);
+
+        // 2. Força reflow
+        track.offsetHeight;
+
+        // 3. Atualiza index e vai para o card real com transição
+        currentIndex = targetIndex;
+
+        setTimeout(() => {
+            // Remove seleção anterior
+            track.querySelectorAll('.player-card').forEach(c => {
+                c.classList.remove('selected');
+            });
+
+            // Adiciona seleção
+            const card = cards[targetIndex];
+            card.classList.add('selected');
+
+            const allCards = Array.from(track.querySelectorAll('.player-card'));
+            const duplicateIndex = targetIndex + totalCards;
+            if (allCards[duplicateIndex]) {
+                allCards[duplicateIndex].classList.add('selected');
+            }
+
+            selectedCard = card;
+            isAutoMode = false;
+
+            centerCard(targetIndex);
+            updateDots();
+            startAutoModeTimer();
+        }, 10);
+    }
+
+    function startAutoModeTimer() {
+        clearTimeout(autoModeTimeout);
+        autoModeTimeout = setTimeout(() => {
+            resetCarousel();
+        }, 5000);
     }
 
     function resetCarousel() {
@@ -207,6 +324,7 @@ function initCarousel() {
         });
         selectedCard = null;
         isAutoMode = true;
+        clearTimeout(autoModeTimeout);
         track.style.animation = '';
         track.style.transform = '';
         track.style.transition = '';
@@ -216,8 +334,7 @@ function initCarousel() {
     if (prevBtn) {
         prevBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const newIndex = currentIndex - 1;
-            selectCard(newIndex);
+            selectCard(currentIndex - 1);
         });
     }
 
@@ -225,10 +342,44 @@ function initCarousel() {
     if (nextBtn) {
         nextBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            const newIndex = currentIndex + 1;
-            selectCard(newIndex);
+            selectCard(currentIndex + 1);
         });
     }
+
+    // Touch support
+    track.addEventListener('touchstart', (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        isDragging = true;
+    }, { passive: true });
+
+    track.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        touchEndX = e.touches[0].clientX;
+        touchEndY = e.touches[0].clientY;
+    }, { passive: true });
+
+    track.addEventListener('touchend', () => {
+        if (!isDragging) return;
+        isDragging = false;
+
+        const swipeDistanceX = touchStartX - touchEndX;
+        const swipeDistanceY = touchStartY - touchEndY;
+        const threshold = 50;
+
+        // Verifica se é swipe horizontal (evita conflito com scroll vertical)
+        if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
+            if (Math.abs(swipeDistanceX) > threshold) {
+                if (swipeDistanceX > 0) {
+                    // Swipe left = next
+                    selectCard(currentIndex + 1);
+                } else {
+                    // Swipe right = prev
+                    selectCard(currentIndex - 1);
+                }
+            }
+        }
+    });
 
     // Click em um card para selecioná-lo
     track.addEventListener('click', (e) => {
@@ -253,6 +404,20 @@ function initCarousel() {
         e.preventDefault();
         resetCarousel();
     });
+
+    // Recalcula dimensões ao redimensionar
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            if (!isAutoMode && selectedCard) {
+                centerCard(currentIndex, true);
+            }
+        }, 250);
+    });
+
+    // Inicializa dots
+    createDots();
 }
 
 // ===========================================

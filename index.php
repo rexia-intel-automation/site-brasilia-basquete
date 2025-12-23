@@ -288,6 +288,8 @@
                 </svg>
             </button>
         </div>
+
+        <div class="carousel-dots" id="carouselDots"></div>
     </section>
 
     <!-- CTA APP SECTION -->
