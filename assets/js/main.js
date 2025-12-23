@@ -152,57 +152,81 @@ function initCarousel() {
 
     let currentIndex = 0;
     let selectedCard = null;
-    const cardWidth = 310; // 280px card + 30px gap
+    let isAutoMode = true;
 
-    function centerCard(index) {
-        const offset = -index * cardWidth;
-        track.style.animation = 'none';
-        track.style.transform = `translateX(${offset}px)`;
+    function getCards() {
+        const allCards = Array.from(track.querySelectorAll('.player-card'));
+        // Retorna apenas a primeira metade (cards originais, sem duplicados)
+        return allCards.slice(0, Math.floor(allCards.length / 2));
     }
 
-    function selectCard(card, index) {
-        // Remove seleção anterior
-        if (selectedCard) {
-            selectedCard.classList.remove('selected');
+    function centerCard(index) {
+        const cards = getCards();
+        const cardWidth = 280 + 30; // largura + gap
+        const containerWidth = track.parentElement.offsetWidth;
+        const offset = (containerWidth / 2) - (cardWidth / 2) - (index * cardWidth);
+
+        track.style.animation = 'none';
+        track.style.transform = `translateX(${offset}px)`;
+        track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+
+    function selectCard(index) {
+        const cards = getCards();
+
+        // Garante que o índice está dentro dos limites
+        index = ((index % cards.length) + cards.length) % cards.length;
+
+        // Remove seleção anterior de todos os cards
+        track.querySelectorAll('.player-card').forEach(c => {
+            c.classList.remove('selected');
+        });
+
+        // Adiciona seleção ao card atual e seu duplicado
+        const card = cards[index];
+        card.classList.add('selected');
+
+        // Também adiciona ao duplicado
+        const allCards = Array.from(track.querySelectorAll('.player-card'));
+        const duplicateIndex = index + cards.length;
+        if (allCards[duplicateIndex]) {
+            allCards[duplicateIndex].classList.add('selected');
         }
 
-        // Adiciona nova seleção
-        card.classList.add('selected');
         selectedCard = card;
         currentIndex = index;
+        isAutoMode = false;
 
         // Centraliza o card
         centerCard(index);
     }
 
     function resetCarousel() {
-        if (selectedCard) {
-            selectedCard.classList.remove('selected');
-            selectedCard = null;
-        }
+        track.querySelectorAll('.player-card').forEach(c => {
+            c.classList.remove('selected');
+        });
+        selectedCard = null;
+        isAutoMode = true;
         track.style.animation = '';
         track.style.transform = '';
+        track.style.transition = '';
     }
 
-    // Previous button - navega para o card anterior
+    // Previous button
     if (prevBtn) {
-        prevBtn.addEventListener('click', () => {
-            const cards = Array.from(track.querySelectorAll('.player-card'));
-            const totalCards = Math.floor(cards.length / 2); // Metade porque temos duplicados
-
-            currentIndex = (currentIndex - 1 + totalCards) % totalCards;
-            selectCard(cards[currentIndex], currentIndex);
+        prevBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const newIndex = currentIndex - 1;
+            selectCard(newIndex);
         });
     }
 
-    // Next button - navega para o próximo card
+    // Next button
     if (nextBtn) {
-        nextBtn.addEventListener('click', () => {
-            const cards = Array.from(track.querySelectorAll('.player-card'));
-            const totalCards = Math.floor(cards.length / 2); // Metade porque temos duplicados
-
-            currentIndex = (currentIndex + 1) % totalCards;
-            selectCard(cards[currentIndex], currentIndex);
+        nextBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const newIndex = currentIndex + 1;
+            selectCard(newIndex);
         });
     }
 
@@ -211,14 +235,22 @@ function initCarousel() {
         const card = e.target.closest('.player-card');
         if (card) {
             e.preventDefault();
-            const cards = Array.from(track.querySelectorAll('.player-card'));
-            const index = cards.indexOf(card) % Math.floor(cards.length / 2);
-            selectCard(card, index);
+            const cards = getCards();
+            const allCards = Array.from(track.querySelectorAll('.player-card'));
+            let index = allCards.indexOf(card);
+
+            // Se for o duplicado, pega o índice original
+            if (index >= cards.length) {
+                index = index - cards.length;
+            }
+
+            selectCard(index);
         }
     });
 
     // Double click para voltar ao modo automático
-    track.addEventListener('dblclick', () => {
+    track.addEventListener('dblclick', (e) => {
+        e.preventDefault();
         resetCarousel();
     });
 }
