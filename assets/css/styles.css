@@ -1689,6 +1689,11 @@ body.menu-open {
         margin-top: 30px;
     }
 
+    /* Esconder botões de navegação no mobile (conflito com swipe) */
+    .nav-button {
+        display: none !important;
+    }
+
     .carousel-dots {
         display: flex;
     }
