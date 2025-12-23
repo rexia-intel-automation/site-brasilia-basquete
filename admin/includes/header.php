@@ -11,6 +11,15 @@
     </div>
 
     <div class="header-right">
+        <div class="quick-search">
+            <input type="text" id="quickSearchInput" class="quick-search-input" placeholder="Buscar... (Ctrl+K)" autocomplete="off">
+            <svg class="quick-search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"/>
+                <path d="m21 21-4.3-4.3"/>
+            </svg>
+            <div class="quick-search-results" id="quickSearchResults"></div>
+        </div>
+
         <button class="theme-toggle-btn" id="adminThemeToggle">
             <svg class="theme-icon sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="4"/>
