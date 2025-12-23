@@ -18,7 +18,7 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     } else {
         $stmt = $db->prepare("DELETE FROM categories WHERE id = ?");
         $stmt->execute([$id]);
-        header('Location: index.php?msg=deleted');
+        header('Location: index?msg=deleted');
         exit;
     }
 }
@@ -39,12 +39,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Update
             $stmt = $db->prepare("UPDATE categories SET name = ?, slug = ? WHERE id = ?");
             $stmt->execute([$name, $slug, $id]);
-            header('Location: index.php?msg=updated');
+            header('Location: index?msg=updated');
         } else {
             // Insert
             $stmt = $db->prepare("INSERT INTO categories (name, slug) VALUES (?, ?)");
             $stmt->execute([$name, $slug]);
-            header('Location: index.php?msg=created');
+            header('Location: index?msg=created');
         }
         exit;
     } catch (PDOException $e) {
@@ -159,7 +159,7 @@ $categories = $db->query("
                                 </button>
 
                                 <?php if ($edit_category): ?>
-                                    <a href="index.php" class="btn btn-outline">Cancelar</a>
+                                    <a href="index" class="btn btn-outline">Cancelar</a>
                                 <?php endif; ?>
                             </div>
                         </form>
@@ -197,7 +197,7 @@ $categories = $db->query("
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <a href="index.php?edit=<?php echo $cat['id']; ?>"
+                                            <a href="index?edit=<?php echo $cat['id']; ?>"
                                                class="btn btn-sm btn-secondary"
                                                title="Editar">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -206,7 +206,7 @@ $categories = $db->query("
                                                 </svg>
                                             </a>
                                             <?php if ($cat['post_count'] == 0): ?>
-                                            <a href="index.php?action=delete&id=<?php echo $cat['id']; ?>"
+                                            <a href="index?action=delete&id=<?php echo $cat['id']; ?>"
                                                class="btn btn-sm btn-danger"
                                                title="Excluir"
                                                onclick="return confirm('Tem certeza que deseja excluir esta categoria?')">
