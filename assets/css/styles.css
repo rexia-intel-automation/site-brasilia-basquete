@@ -1587,6 +1587,16 @@ body.menu-open {
         gap: 20px;
     }
 
+    /* Keyframe ajustado para gap de 20px */
+    @keyframes infiniteScroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-50% - 10px));
+        }
+    }
+
     .nav-button {
         width: 60px;
         height: 60px;
@@ -1710,6 +1720,16 @@ body.menu-open {
         gap: 15px;
     }
 
+    /* Keyframe ajustado para gap de 15px */
+    @keyframes infiniteScroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-50% - 7.5px));
+        }
+    }
+
     .player-image {
         height: 220px;
     }
@@ -1815,23 +1835,33 @@ body.menu-open {
         gap: 12px !important;
     }
 
+    /* Keyframe ajustado para gap de 12px */
+    @keyframes infiniteScroll {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(calc(-50% - 6px));
+        }
+    }
+
     .player-image {
         height: 180px !important;
     }
 
     .player-info {
-        padding: 15px !important;
+        padding: 18px !important;
     }
 
     .player-number {
-        font-size: 16px !important;
+        font-size: 28px !important;
     }
 
     .player-name {
-        font-size: 18px !important;
+        font-size: 22px !important;
     }
 
     .player-position {
-        font-size: 13px !important;
+        font-size: 14px !important;
     }
 }
