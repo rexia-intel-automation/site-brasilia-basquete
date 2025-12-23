@@ -116,8 +116,13 @@ async function loadPlayers() {
             return `
                 <a href="#" class="player-card" data-player="${player.number}">
                     <div class="player-image">
-                        <img src="${player.photo}" alt="${player.name}"
-                             onerror="this.src='https://via.placeholder.com/280x350/1A1A1A/FFFFFF?text=${player.number}'">
+                        <img src="${player.photo}"
+                             alt="${player.name}"
+                             loading="lazy"
+                             onerror="this.style.display='none'; this.parentElement.classList.add('no-image');">
+                        <div class="player-image-fallback">
+                            <span class="player-number-large">#${player.number}</span>
+                        </div>
                     </div>
                     <div class="player-info">
                         <div class="player-number">#${player.number}</div>
