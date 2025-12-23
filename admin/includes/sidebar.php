@@ -19,7 +19,7 @@
             <h3>Conteúdo</h3>
         </div>
 
-        <a href="players/index.php" class="nav-item <?php echo strpos($_SERVER['PHP_SELF'], 'players/') !== false ? 'active' : ''; ?>">
+        <a href="players/index.php" class="nav-item has-submenu <?php echo strpos($_SERVER['PHP_SELF'], 'players/') !== false ? 'active' : ''; ?>">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
                 <circle cx="9" cy="7" r="4"/>
@@ -28,14 +28,46 @@
             </svg>
             <span>Jogadores</span>
         </a>
+        <div class="submenu">
+            <a href="players/index.php" class="nav-item">
+                <span>Todos Jogadores</span>
+            </a>
+            <a href="players/form.php" class="nav-item">
+                <span>Novo Jogador</span>
+            </a>
+            <a href="players/index.php?status=inactive" class="nav-item">
+                <span>Inativos</span>
+            </a>
+        </div>
 
-        <a href="posts/index.php" class="nav-item <?php echo strpos($_SERVER['PHP_SELF'], 'posts/') !== false ? 'active' : ''; ?>">
+        <a href="posts/index.php" class="nav-item has-submenu <?php echo strpos($_SERVER['PHP_SELF'], 'posts/') !== false ? 'active' : ''; ?>">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
                 <polyline points="14 2 14 8 20 8"/>
             </svg>
             <span>Posts</span>
+            <?php
+            $db = getDB();
+            $drafts_count = $db->query("SELECT COUNT(*) as count FROM posts WHERE published = 0")->fetch()['count'];
+            if ($drafts_count > 0):
+            ?>
+                <span class="badge badge-warning"><?php echo $drafts_count; ?></span>
+            <?php endif; ?>
         </a>
+        <div class="submenu">
+            <a href="posts/index.php" class="nav-item">
+                <span>Todos Posts</span>
+            </a>
+            <a href="posts/form.php" class="nav-item">
+                <span>Novo Post</span>
+            </a>
+            <a href="posts/index.php?status=draft" class="nav-item">
+                <span>Rascunhos</span>
+                <?php if ($drafts_count > 0): ?>
+                    <span class="badge badge-secondary"><?php echo $drafts_count; ?></span>
+                <?php endif; ?>
+            </a>
+        </div>
 
         <a href="categories/index.php" class="nav-item <?php echo strpos($_SERVER['PHP_SELF'], 'categories/') !== false ? 'active' : ''; ?>">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
