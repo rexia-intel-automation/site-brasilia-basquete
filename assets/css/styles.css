@@ -499,13 +499,15 @@ body {
 .carousel-container {
     position: relative;
     overflow: hidden;
-    margin-top: 40px;
+    overflow-x: hidden;
+    margin: -20px 0 20px 0;
+    padding: 80px 0;
 }
 
 .carousel-track {
     display: flex;
     gap: 30px;
-    padding: 20px 0;
+    padding: 0;
     animation: infiniteScroll 40s linear infinite;
 }
 
@@ -521,6 +523,7 @@ body {
 /* Removido - hover não pausa mais o carrossel */
 .carousel-track {
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    contain: layout style paint;
 }
 
 .player-card {
@@ -536,6 +539,7 @@ body {
     text-decoration: none;
     color: inherit;
     display: block;
+    will-change: transform;
 }
 
 .player-card::before {
@@ -646,6 +650,31 @@ body {
 .nav-button svg {
     width: 24px;
     height: 24px;
+}
+
+.carousel-dots {
+    display: none;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.carousel-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--text-muted);
+    opacity: 0.3;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+}
+
+.carousel-dot.active {
+    background: var(--primary-orange);
+    opacity: 1;
+    transform: scale(1.2);
 }
 
 /* CTA APP SECTION */
@@ -1519,6 +1548,20 @@ body.menu-open {
         grid-template-columns: repeat(2, 1fr);
         gap: 30px;
     }
+
+    /* Carousel responsivo - Tablets */
+    .player-card {
+        min-width: 220px;
+    }
+
+    .carousel-track {
+        gap: 20px;
+    }
+
+    .nav-button {
+        width: 60px;
+        height: 60px;
+    }
 }
 
 @media (max-width: 768px) {
@@ -1628,6 +1671,27 @@ body.menu-open {
         width: 40px;
         height: 40px;
     }
+
+    /* Carousel responsivo - Mobile */
+    .player-card {
+        min-width: 180px;
+    }
+
+    .carousel-track {
+        gap: 15px;
+    }
+
+    .player-image {
+        height: 240px;
+    }
+
+    .carousel-navigation {
+        margin-top: 30px;
+    }
+
+    .carousel-dots {
+        display: flex;
+    }
 }
 
 /* MOBILE SMALL (480px and below) */
@@ -1706,5 +1770,34 @@ body.menu-open {
     .btn {
         padding: 12px 20px !important;
         font-size: 0.9rem !important;
+    }
+
+    /* Carousel responsivo - Mobile Pequeno */
+    .player-card {
+        min-width: 160px !important;
+    }
+
+    .carousel-track {
+        gap: 12px !important;
+    }
+
+    .player-image {
+        height: 200px !important;
+    }
+
+    .player-info {
+        padding: 15px !important;
+    }
+
+    .player-number {
+        font-size: 16px !important;
+    }
+
+    .player-name {
+        font-size: 18px !important;
+    }
+
+    .player-position {
+        font-size: 13px !important;
     }
 }
