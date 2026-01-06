@@ -271,7 +271,7 @@ body {
     margin-bottom: 20px;
     border-radius: inherit;
 }
-.record-image-container img { max-height: 100%; width: auto; }
+.record-image-container img { max-height: 100%; width: auto; border-radius: inherit}
 .record-card ul { list-style: none; padding-left: 10px; }
 .record-card ul li { margin-bottom: 10px; position: relative; padding-left: 15px; }
 .record-card ul li::before { content: "•"; color: var(--primary-orange); position: absolute; left: 0; font-weight: bold; }
