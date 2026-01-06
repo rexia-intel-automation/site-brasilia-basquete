@@ -14,10 +14,7 @@ class ThemeManager {
     }
 
     init() {
-        // Apply stored theme
         document.documentElement.setAttribute('data-theme', this.theme);
-
-        // Wait for DOM to be ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => this.setupToggle());
         } else {
@@ -37,13 +34,8 @@ class ThemeManager {
         document.documentElement.setAttribute('data-theme', this.theme);
         localStorage.setItem('theme', this.theme);
     }
-
-    getTheme() {
-        return this.theme;
-    }
 }
 
-// Initialize theme manager
 const themeManager = new ThemeManager();
 
 // ===========================================
@@ -71,21 +63,15 @@ function initSmoothScroll() {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const href = this.getAttribute('href');
-
-            // Ignore empty fragments and single #
             if (href === '#' || href.length <= 1) {
                 e.preventDefault();
                 return;
             }
-
             const target = document.querySelector(href);
             if (target) {
                 e.preventDefault();
                 const offsetTop = target.offsetTop - 100;
-                window.scrollTo({
-                    top: offsetTop,
-                    behavior: 'smooth'
-                });
+                window.scrollTo({ top: offsetTop, behavior: 'smooth' });
             }
         });
     });
@@ -97,7 +83,6 @@ function initSmoothScroll() {
 
 async function loadPlayers() {
     try {
-        // Nota: Ajuste o caminho ('assets/data/players.json' ou 'get-players.php') conforme sua estrutura real
         const response = await fetch('assets/data/players.json'); 
         if (!response.ok) throw new Error('Erro ao carregar jogadores');
 
@@ -239,8 +224,28 @@ function initCarousel() {
 
     function stopAutoPlay() { clearInterval(autoPlayInterval); }
 
-    document.getElementById('prevBtn')?.addEventListener('click', () => { prev(); startAutoPlay(); });
-    document.getElementById('nextBtn')?.addEventListener('click', () => { next(); startAutoPlay(); });
+    document.getElementById('prevBtn')?.addEventListener('click', (e) => { 
+        e.preventDefault();
+        next(); 
+        startAutoPlay(); 
+    });
+    
+    document.getElementById('nextBtn')?.addEventListener('click', (e) => { 
+        e.preventDefault();
+        next(); 
+        startAutoPlay(); 
+    });
+    
+    // Suporte para botão anterior se existir
+    const realPrevBtn = document.getElementById('prevBtn');
+    if (realPrevBtn) {
+         // O listener acima já cobre, mas garantindo a direção correta:
+         realPrevBtn.onclick = (e) => {
+             e.preventDefault();
+             prev();
+             startAutoPlay();
+         }
+    }
 
     track.addEventListener('mouseenter', stopAutoPlay);
     track.addEventListener('mouseleave', startAutoPlay);
@@ -263,7 +268,9 @@ function initCarousel() {
         startAutoPlay();
     });
 
-    window.addEventListener('resize', updateMetrics);
+    window.addEventListener('resize', () => {
+        updateMetrics();
+    });
 
     setTimeout(() => {
         updateMetrics();
@@ -272,138 +279,16 @@ function initCarousel() {
     }, 100);
 }
 
-    // Previous button
-    if (prevBtn) {
-        prevBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            selectCard(currentIndex - 1);
-        });
-    }
-
-    // Next button
-    if (nextBtn) {
-        nextBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            selectCard(currentIndex + 1);
-        });
-    }
-
-    // Touch support
-    track.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
-        isDragging = true;
-
-        // Pausa a animação automática durante o touch
-        if (isAutoMode) {
-            track.style.animationPlayState = 'paused';
-        }
-    }, { passive: true });
-
-    track.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
-        touchEndX = e.touches[0].clientX;
-        touchEndY = e.touches[0].clientY;
-    }, { passive: true });
-
-    track.addEventListener('touchend', () => {
-        if (!isDragging) return;
-        isDragging = false;
-
-        const swipeDistanceX = touchStartX - touchEndX;
-        const swipeDistanceY = touchStartY - touchEndY;
-        const threshold = 50;
-
-        // Verifica se é swipe horizontal (evita conflito com scroll vertical)
-        if (Math.abs(swipeDistanceX) > Math.abs(swipeDistanceY)) {
-            if (Math.abs(swipeDistanceX) > threshold) {
-                if (swipeDistanceX > 0) {
-                    // Swipe left = next
-                    selectCard(currentIndex + 1);
-                } else {
-                    // Swipe right = prev
-                    selectCard(currentIndex - 1);
-                }
-            } else {
-                // Swipe muito curto - retoma animação se estava em auto mode
-                if (isAutoMode) {
-                    track.style.animationPlayState = 'running';
-                }
-            }
-        } else {
-            // Swipe vertical - retoma animação se estava em auto mode
-            if (isAutoMode) {
-                track.style.animationPlayState = 'running';
-            }
-        }
-    });
-
-    // Cancela o touch se o usuário sair da área
-    track.addEventListener('touchcancel', () => {
-        if (isDragging) {
-            isDragging = false;
-            // Retoma animação se estava em auto mode
-            if (isAutoMode) {
-                track.style.animationPlayState = 'running';
-            }
-        }
-    });
-
-    // Click em um card para selecioná-lo
-    track.addEventListener('click', (e) => {
-        const card = e.target.closest('.player-card');
-        if (card) {
-            e.preventDefault();
-            const cards = getCards();
-            const allCards = Array.from(track.querySelectorAll('.player-card'));
-            let index = allCards.indexOf(card);
-
-            // Se for o duplicado, pega o índice original
-            if (index >= cards.length) {
-                index = index - cards.length;
-            }
-
-            selectCard(index);
-        }
-    });
-
-    // Double click para voltar ao modo automático
-    track.addEventListener('dblclick', (e) => {
-        e.preventDefault();
-        resetCarousel();
-    });
-
-    // Recalcula dimensões ao redimensionar
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            if (!isAutoMode && selectedCard) {
-                centerCard(currentIndex, true);
-            }
-        }, 250);
-    });
-
-    // Inicializa dots
-    createDots();
-}
-
 // ===========================================
 // BLOG FILTERS
 // ===========================================
 
 function initBlogFilters() {
     const filterBtns = document.querySelectorAll('.filter-btn');
-
     filterBtns.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remove active from all buttons
             filterBtns.forEach(b => b.classList.remove('active'));
-
-            // Add active to clicked button
             this.classList.add('active');
-
-            // Here you can add filtering logic if needed
             const category = this.textContent.trim();
             console.log('Filtering by:', category);
         });
@@ -416,15 +301,9 @@ function initBlogFilters() {
 
 function initLoadMore() {
     const loadMoreBtn = document.querySelector('.load-more-btn');
-
     if (loadMoreBtn) {
         loadMoreBtn.addEventListener('click', function() {
-            console.log('Loading more posts...');
-            // Add your load more logic here
-
-            // Example: show loading state
             this.textContent = 'Carregando...';
-
             setTimeout(() => {
                 this.textContent = 'Carregar Mais Notícias';
             }, 1000);
@@ -437,11 +316,7 @@ function initLoadMore() {
 // ===========================================
 
 function initScrollAnimations() {
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -451,18 +326,11 @@ function initScrollAnimations() {
         });
     }, observerOptions);
 
-    // Observe elements for animation
-    const elementsToAnimate = document.querySelectorAll(
-        '.record-card, .timeline-item, .sponsor-logo, .post-card'
-    );
-
+    const elementsToAnimate = document.querySelectorAll('.record-card, .timeline-item, .sponsor-logo, .post-card');
     elementsToAnimate.forEach(element => {
-        // Set initial state
         element.style.opacity = '0';
         element.style.transform = 'translateY(30px)';
         element.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-
-        // Start observing
         observer.observe(element);
     });
 }
@@ -477,7 +345,6 @@ function initMobileMenu() {
     const navLinksRight = document.querySelector('.nav-links.right');
     const body = document.body;
 
-    // Create overlay if it doesn't exist
     let overlay = document.querySelector('.mobile-menu-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -487,31 +354,21 @@ function initMobileMenu() {
 
     if (!menuToggle || !navLinksLeft || !navLinksRight) return;
 
-    // Create unified mobile menu container
     let mobileMenu = document.querySelector('.mobile-menu-unified');
     if (!mobileMenu) {
         mobileMenu = document.createElement('ul');
         mobileMenu.className = 'nav-links mobile-menu-unified';
 
-        // Clone links from LEFT menu (Início, Elenco, Recordes)
         const leftLinks = navLinksLeft.querySelectorAll('li:not(.social-links)');
-        leftLinks.forEach(li => {
-            mobileMenu.appendChild(li.cloneNode(true));
-        });
+        leftLinks.forEach(li => mobileMenu.appendChild(li.cloneNode(true)));
 
-        // Clone links from RIGHT menu (História, Canal do Time)
         const rightLinks = navLinksRight.querySelectorAll('li:not(.social-links)');
-        rightLinks.forEach(li => {
-            mobileMenu.appendChild(li.cloneNode(true));
-        });
+        rightLinks.forEach(li => mobileMenu.appendChild(li.cloneNode(true)));
 
-        // Clone social links from RIGHT menu
         const socialLinks = navLinksRight.querySelector('.social-links');
         if (socialLinks) {
             mobileMenu.appendChild(socialLinks.cloneNode(true));
         }
-
-        // Insert mobile menu into DOM
         document.body.appendChild(mobileMenu);
     }
 
@@ -520,11 +377,7 @@ function initMobileMenu() {
         mobileMenu.classList.add('mobile-active');
         overlay.classList.add('active');
         body.classList.add('menu-open');
-
-        // Trigger animation
-        setTimeout(() => {
-            mobileMenu.classList.add('show');
-        }, 10);
+        setTimeout(() => mobileMenu.classList.add('show'), 10);
     }
 
     function closeMenu() {
@@ -532,46 +385,28 @@ function initMobileMenu() {
         mobileMenu.classList.remove('show');
         overlay.classList.remove('active');
         body.classList.remove('menu-open');
-
-        // Wait for animation before removing mobile-active
-        setTimeout(() => {
-            mobileMenu.classList.remove('mobile-active');
-        }, 300);
+        setTimeout(() => mobileMenu.classList.remove('mobile-active'), 300);
     }
 
-    // Toggle menu on button click
     menuToggle.addEventListener('click', function(e) {
         e.stopPropagation();
-        if (menuToggle.classList.contains('active')) {
-            closeMenu();
-        } else {
-            openMenu();
-        }
+        if (menuToggle.classList.contains('active')) closeMenu();
+        else openMenu();
     });
 
-    // Close menu when clicking overlay
     overlay.addEventListener('click', closeMenu);
 
-    // Close menu when clicking on a link
     const menuLinks = mobileMenu.querySelectorAll('a:not(.social-links a)');
     menuLinks.forEach(link => {
-        link.addEventListener('click', () => {
-            closeMenu();
-        });
+        link.addEventListener('click', closeMenu);
     });
 
-    // Close menu on escape key
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && menuToggle.classList.contains('active')) {
-            closeMenu();
-        }
+        if (e.key === 'Escape' && menuToggle.classList.contains('active')) closeMenu();
     });
 
-    // Close menu on window resize if open
     window.addEventListener('resize', () => {
-        if (window.innerWidth > 1024 && menuToggle.classList.contains('active')) {
-            closeMenu();
-        }
+        if (window.innerWidth > 1024 && menuToggle.classList.contains('active')) closeMenu();
     });
 }
 
@@ -580,7 +415,6 @@ function initMobileMenu() {
 // ===========================================
 
 function init() {
-    // Initialize all features
     initNavbar();
     initSmoothScroll();
     initCarousel();
@@ -589,25 +423,18 @@ function init() {
     initScrollAnimations();
     initMobileMenu();
 
-    // Load players if on home page
     const carouselTrack = document.getElementById('carouselTrack');
     if (carouselTrack) {
         loadPlayers();
     }
 }
 
-// Wait for DOM to be ready
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
     init();
 }
 
-// ===========================================
-// UTILITY FUNCTIONS
-// ===========================================
-
-// Debounce function for performance
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -620,7 +447,6 @@ function debounce(func, wait) {
     };
 }
 
-// Export for use in other scripts if needed
 window.BrasiliaBasquete = {
     themeManager,
     loadPlayers,
