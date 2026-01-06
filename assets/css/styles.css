@@ -303,7 +303,7 @@ body {
 
 /* HERO SECTION */
 .hero {
-    min-height: 100vh;
+    min-height: 50vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -486,7 +486,7 @@ body {
     text-align: center;
     font-size: 20px;
     color: var(--text-muted);
-    margin-bottom: 80px;
+    margin-bottom: 2%;
     letter-spacing: 2px;
 }
 
@@ -1714,7 +1714,7 @@ body.menu-open {
     .blog-filters,
     .featured-section,
     .posts-section {
-        padding: 60px 15px !important;
+        padding: 5% 15px !important;
     }
 
     .nav-container {
