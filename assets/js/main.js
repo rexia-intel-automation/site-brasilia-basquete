@@ -431,11 +431,7 @@ function init() {
         // Se precisar dela refatorada também, me avise.
         initMobileMenuOriginal(); 
     }
-
-    // Inicializa Carrossel
-    if (document.getElementById('carouselTrack')) {
-        window.playerCarousel = new PlayerCarousel('carouselTrack', 'carouselDots');
-    }
+   
 }
 
 // Função de debounce utilitária
