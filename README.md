@@ -1,6 +1,7 @@
 # 🏀 BRASÍLIA BASQUETE - SITE COMPLETO
 
-## ✅ PROJETO 100% PRONTO PARA USO!
+
+Link do site de testes: https://silver-spider-414564.hostingersite.com/
 
 ---
 
