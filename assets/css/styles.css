@@ -496,214 +496,152 @@ body {
     background: var(--bg-primary);
 }
 
-.carousel-container {
+/* =========================================
+   NOVO CARROSSEL (DO ZERO)
+   ========================================= */
+
+.carousel-wrapper {
     position: relative;
     overflow: hidden;
-    margin: -40px 0 40px 0;
-    padding: 160px 0;
+    width: 100%;
+    padding: 60px 0; /* Espaço para o efeito de "zoom" não cortar */
+    margin: 0 auto;
 }
 
 .carousel-track {
     display: flex;
-    gap: 30px;
-    padding: 0;
-    /* Transição suave controlada via JS */
-    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
-    
-    /* Otimizações de performance e UX */
-    will-change: transform;
+    gap: 30px; /* Espaço entre cards */
+    width: max-content; /* Importante para o cálculo de largura */
     cursor: grab;
-    
-    /* Propriedades para melhor experiência touch */
-    contain: layout style paint;
-    touch-action: pan-y;
-    user-select: none;
-    -webkit-user-drag: none;
+    touch-action: pan-y; /* Permite scroll vertical da página, mas não horizontal no elemento */
+    will-change: transform; /* Otimização de performance */
 }
 
 .carousel-track:active {
     cursor: grabbing;
 }
 
+/* Card do Jogador */
 .player-card {
-    min-width: 240px;
+    width: 280px; /* Largura fixa para facilitar cálculos */
     flex-shrink: 0;
     background: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 20px;
     overflow: hidden;
-    transition: all 0.4s ease;
-    border: 1px solid var(--card-border);
     position: relative;
-    cursor: pointer;
-    text-decoration: none;
-    color: inherit;
-    display: block;
-    will-change: transform;
+    transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.3s ease;
+    user-select: none; /* Evita seleção de texto ao arrastar */
 }
 
-.player-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 5px;
-    background: linear-gradient(90deg, var(--primary-blue), var(--primary-orange));
-    transform: scaleX(0);
-    transition: transform 0.4s ease;
-}
-
-.player-card:hover {
-    transform: translateY(-10px) scale(1.05);
+/* Efeito Hover (Zoom) */
+.player-card:hover,
+.player-card.active-focus {
+    transform: translateY(-15px) scale(1.05);
     border-color: var(--primary-orange);
-    box-shadow: 0 20px 60px rgba(209, 125, 0, 0.3);
-    z-index: 10;
-}
-
-.player-card:hover::before {
-    transform: scaleX(1);
-}
-
-/* Card selecionado - efeito de popout/elevação */
-.player-card.selected {
-    transform: translateY(-20px) scale(1.1);
-    border-color: var(--primary-orange);
-    box-shadow: 0 30px 80px rgba(209, 125, 0, 0.5);
-    z-index: 20;
-}
-
-.player-card.selected::before {
-    transform: scaleX(1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    z-index: 2;
 }
 
 .player-image {
+    height: 320px;
     width: 100%;
-    height: 350px;
     background: var(--bg-secondary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
 }
 
 .player-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-}
-
-/* Fallback quando imagem não carrega */
-.player-image.no-image {
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
-}
-
-.player-image-fallback {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(135deg, var(--primary-blue) 0%, var(--primary-orange) 100%);
-}
-
-.player-image.no-image .player-image-fallback {
-    display: flex;
-}
-
-.player-number-large {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 120px;
-    color: white;
-    opacity: 0.9;
-    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    pointer-events: none; /* Importante para não atrapalhar o drag */
 }
 
 .player-info {
-    padding: 25px;
-}
-
-.player-number {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 48px;
-    color: var(--primary-orange);
-    line-height: 1;
+    padding: 20px;
+    text-align: center;
 }
 
 .player-name {
     font-family: 'Bebas Neue', cursive;
-    font-size: 32px;
-    margin: 10px 0;
-    letter-spacing: 1px;
+    font-size: 28px;
     color: var(--primary-blue);
+    margin: 5px 0;
 }
 
 .player-position {
-    font-size: 16px;
     color: var(--text-muted);
+    font-size: 14px;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    font-weight: 700;
 }
 
-.carousel-navigation {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 40px;
-}
-
-.nav-button {
+/* Controles de Navegação */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     background: var(--primary-orange);
-    border: none;
     color: white;
-    width: 50px;
-    height: 50px;
+    border: none;
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
+    font-size: 20px;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(209, 125, 0, 0.3);
+    z-index: 10;
+    opacity: 0; /* Esconde e mostra só no hover do container */
+    transition: opacity 0.3s ease, background 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 }
 
-.nav-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(209, 125, 0, 0.5);
+.carousel-wrapper:hover .carousel-arrow {
+    opacity: 1;
+}
+
+.carousel-arrow:hover {
     background: var(--primary-blue);
 }
 
-.nav-button svg {
-    width: 24px;
-    height: 24px;
-}
+.carousel-arrow.prev { left: 20px; }
+.carousel-arrow.next { right: 20px; }
 
+/* Paginação (Dots) */
 .carousel-dots {
-    display: none;
-    gap: 8px;
+    display: flex;
     justify-content: center;
+    gap: 8px;
     margin-top: 20px;
 }
 
-.carousel-dot {
-    width: 8px;
-    height: 8px;
+.dot {
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    background: var(--text-muted);
-    opacity: 0.3;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    background: #ccc;
     border: none;
-    padding: 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
 }
 
-.carousel-dot.active {
+.dot.active {
     background: var(--primary-orange);
-    opacity: 1;
-    transform: scale(1.2);
+    transform: scale(1.3);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .player-card {
+        width: 220px; /* Card menor no mobile */
+    }
+    .player-image {
+        height: 260px;
+    }
+    .carousel-arrow {
+        display: none; /* Remove setas no mobile (foco no touch) */
+    }
+    .carousel-wrapper {
+        padding: 40px 0;
+    }
 }
 
 /* CTA APP SECTION */
