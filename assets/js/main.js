@@ -81,260 +81,273 @@ function initSmoothScroll() {
 }
 
 // ===========================================
-// PLAYER CAROUSEL (REFATORADO - CLASS BASED)
+// CLASSE CARROSSEL INFINITO (VERSÃO FINAL)
 // ===========================================
 
-class PlayerCarousel {
-    constructor(trackId, dotsId) {
-        this.track = document.getElementById(trackId);
-        this.dotsContainer = document.getElementById(dotsId);
-        
-        if (!this.track) return;
+class InfiniteCarousel {
+    constructor(wrapperId, dataUrl) {
+        this.wrapper = document.getElementById(wrapperId);
+        if (!this.wrapper) return;
 
+        // Elementos DOM
+        this.track = this.wrapper.querySelector('.carousel-track');
+        this.prevBtn = this.wrapper.querySelector('.prev');
+        this.nextBtn = this.wrapper.querySelector('.next');
+        this.dotsContainer = this.wrapper.querySelector('.carousel-dots');
+
+        // Configurações
+        this.url = dataUrl;
+        this.autoPlayDelay = 4000;
+        this.cardWidth = 280; // Valor base (será recalculado)
+        this.gap = 30; // Valor base (será recalculado)
+        
         // Estado
-        this.cards = [];
-        this.totalOriginal = 0;
-        this.currentIndex = 0;
-        this.cardWidth = 0;
-        this.gap = 0;
-        this.autoPlayTimer = null;
+        this.players = [];
+        this.index = 0;
         this.isDragging = false;
         this.startPos = 0;
-        this.isTransitioning = false;
+        this.currentTranslate = 0;
+        this.prevTranslate = 0;
+        this.animationID = null;
+        this.intervalID = null;
+        this.totalOriginal = 0;
 
-        // Bindings
-        this.next = this.next.bind(this);
-        this.prev = this.prev.bind(this);
-        this.handleTransitionEnd = this.handleTransitionEnd.bind(this);
-        
-        this.loadData();
+        // Inicia
+        this.init();
     }
 
-    async loadData() {
+    async init() {
+        // 1. Carregar Dados
         try {
-            const response = await fetch(CONFIG.api.players);
-            if (!response.ok) throw new Error('Falha na API de jogadores');
-            
-            const players = await response.json();
-            this.render(players);
+            const response = await fetch(this.url);
+            this.players = await response.json();
+            this.totalOriginal = this.players.length;
         } catch (error) {
-            console.error('Erro ao carregar carrossel:', error);
-            // Fallback opcional ou mensagem de erro na UI
-            if (this.track) this.track.innerHTML = '<p style="color:white;text-align:center;width:100%">Não foi possível carregar o elenco.</p>';
-        }
-    }
-
-    createCardHTML(player, isDuplicate = false) {
-        return `
-            <a href="#" class="player-card" data-player="${player.number}" ${isDuplicate ? 'aria-hidden="true" tabindex="-1"' : ''}>
-                <div class="player-image">
-                    <img src="${player.photo}" alt="${player.name}" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'">
-                    <div class="player-image-fallback">
-                        <span class="player-number-large">#${player.number}</span>
-                    </div>
-                </div>
-                <div class="player-info">
-                    <div class="player-number">#${player.number}</div>
-                    <h3 class="player-name">${player.name}</h3>
-                    <p class="player-position">${player.position}</p>
-                </div>
-            </a>
-        `;
-    }
-
-    render(players) {
-        let html = '';
-        // Originais
-        players.forEach(p => html += this.createCardHTML(p));
-        // Duplicatas (Clone para loop infinito)
-        players.forEach(p => html += this.createCardHTML(p, true));
-
-        this.track.innerHTML = html;
-        
-        // Aguarda renderização para iniciar cálculos
-        requestAnimationFrame(() => {
-            this.init();
-        });
-    }
-
-    init() {
-        this.updateMetrics();
-        this.createDots();
-        this.addEventListeners();
-        this.startAutoPlay();
-        
-        // Listener para redimensionamento
-        window.addEventListener('resize', window.BrasiliaBasquete.debounce(() => {
-            this.updateMetrics();
-            this.updatePosition(false);
-        }, 200));
-
-        // Listener crítico para o loop infinito suave
-        this.track.addEventListener('transitionend', this.handleTransitionEnd);
-    }
-
-    updateMetrics() {
-        const allCards = Array.from(this.track.querySelectorAll('.player-card'));
-        if (allCards.length === 0) return;
-
-        this.cards = allCards;
-        this.totalOriginal = this.cards.length / 2;
-        
-        const style = window.getComputedStyle(this.track);
-        this.gap = parseFloat(style.gap) || 30;
-        this.cardWidth = this.cards[0].offsetWidth;
-    }
-
-    updatePosition(animate = true) {
-        const moveDistance = (this.cardWidth + this.gap) * this.currentIndex;
-        
-        this.track.style.transition = animate ? `transform ${CONFIG.carousel.transitionDuration}ms ease-out` : 'none';
-        this.track.style.transform = `translateX(${-moveDistance}px)`;
-
-        this.updateActiveClasses();
-        this.updateDots();
-    }
-
-    updateActiveClasses() {
-        this.cards.forEach(c => c.classList.remove('selected', 'active'));
-        
-        const realIndex = this.currentIndex % this.totalOriginal;
-        
-        // Marca o original e o clone como ativos
-        if (this.cards[realIndex]) this.cards[realIndex].classList.add('active');
-        if (this.cards[realIndex + this.totalOriginal]) this.cards[realIndex + this.totalOriginal].classList.add('active');
-    }
-
-    handleTransitionEnd() {
-        if (!this.isTransitioning) return;
-
-        // Loop Infinito: Direita -> Voltar para o início
-        if (this.currentIndex >= this.totalOriginal) {
-            this.track.style.transition = 'none';
-            this.currentIndex = 0;
-            this.updatePosition(false);
-        }
-        
-        this.isTransitioning = false;
-    }
-
-    goTo(index) {
-        if (this.isTransitioning) return;
-
-        this.currentIndex = index;
-
-        // Loop Infinito: Esquerda -> Pular para o final dos clones
-        if (this.currentIndex < 0) {
-            this.track.style.transition = 'none';
-            this.currentIndex = this.totalOriginal; // Pula para o primeiro clone (que é igual ao index 0)
-            this.updatePosition(false);
-            
-            // Força reflow
-            void this.track.offsetWidth;
-            
-            // Agora anima para trás
-            requestAnimationFrame(() => {
-                this.isTransitioning = true;
-                this.currentIndex = this.totalOriginal - 1;
-                this.updatePosition(true);
-            });
+            console.error('Erro ao carregar jogadores:', error);
             return;
         }
 
-        // Loop normal ou indo para o clone da direita
-        if (this.currentIndex >= this.totalOriginal) {
-            this.isTransitioning = true; // Marca flag para ser tratada no 'transitionend'
+        // 2. Renderizar (Duplicando lista para loop infinito)
+        this.render();
+
+        // 3. Configurar Eventos
+        this.addEventListeners();
+        
+        // 4. Iniciar Métricas e Autoplay
+        this.updateMetrics();
+        this.startAutoPlay();
+        
+        // Observar redimensionamento
+        window.addEventListener('resize', () => {
+            this.updateMetrics();
+            this.setPositionByIndex();
+        });
+    }
+
+    render() {
+        const createCard = (p) => `
+            <div class="player-card">
+                <div class="player-image">
+                    <img src="${p.photo}" alt="${p.name}" loading="lazy" draggable="false" 
+                         onerror="this.parentElement.style.backgroundColor='#eee';this.style.display='none'">
+                </div>
+                <div class="player-info">
+                    <h3 class="player-name">#${p.number} ${p.name}</h3>
+                    <p class="player-position">${p.position}</p>
+                </div>
+            </div>
+        `;
+
+        // Renderiza lista ORIGINAL + CLONE
+        const originalHTML = this.players.map(createCard).join('');
+        const cloneHTML = this.players.map(createCard).join(''); // Cópia exata
+        
+        this.track.innerHTML = originalHTML + cloneHTML;
+        this.renderDots();
+    }
+
+    renderDots() {
+        // Apenas para os itens originais
+        this.dotsContainer.innerHTML = this.players.map((_, i) => 
+            `<button class="dot ${i === 0 ? 'active' : ''}" aria-label="Slide ${i+1}"></button>`
+        ).join('');
+        
+        // Adiciona clicks nos dots
+        Array.from(this.dotsContainer.children).forEach((dot, i) => {
+            dot.addEventListener('click', () => {
+                this.index = i;
+                this.setPositionByIndex();
+                this.resetAutoPlay();
+            });
+        });
+    }
+
+    updateMetrics() {
+        // Lê os valores reais do CSS
+        const firstCard = this.track.firstElementChild;
+        if (firstCard) {
+            this.cardWidth = firstCard.offsetWidth;
+            const style = window.getComputedStyle(this.track);
+            this.gap = parseFloat(style.gap) || 0;
+        }
+    }
+
+    // --- LÓGICA DE MOVIMENTO ---
+
+    getIndexPosition(idx) {
+        return -(idx * (this.cardWidth + this.gap));
+    }
+
+    setPositionByIndex() {
+        this.currentTranslate = this.getIndexPosition(this.index);
+        this.prevTranslate = this.currentTranslate;
+        this.setSliderPosition();
+        this.updateDotsState();
+    }
+
+    setSliderPosition() {
+        this.track.style.transform = `translateX(${this.currentTranslate}px)`;
+    }
+
+    slide(direction) {
+        // Transição suave
+        this.track.style.transition = 'transform 0.4s ease-out';
+        
+        if (direction === 'next') {
+            this.index++;
+        } else {
+            this.index--;
         }
 
-        this.updatePosition(true);
+        this.currentTranslate = this.getIndexPosition(this.index);
+        this.setSliderPosition();
+
+        // Verifica Loop Infinito ao final da transição
+        this.track.addEventListener('transitionend', () => {
+            this.checkIndexBoundary();
+        }, { once: true });
+        
+        this.updateDotsState();
     }
 
-    next() {
-        this.goTo(this.currentIndex + 1);
+    checkIndexBoundary() {
+        // Se passou do total original (está nos clones), volta pro inicio invisivelmente
+        if (this.index >= this.totalOriginal) {
+            this.track.style.transition = 'none'; // Remove animação
+            this.index = 0; // Reseta índice
+            this.currentTranslate = this.getIndexPosition(this.index);
+            this.setSliderPosition();
+        }
+        // Se voltou antes do zero, vai pro final dos clones
+        else if (this.index < 0) {
+            this.track.style.transition = 'none';
+            this.index = this.totalOriginal - 1;
+            this.currentTranslate = this.getIndexPosition(this.index);
+            this.setSliderPosition();
+        }
     }
 
-    prev() {
-        this.goTo(this.currentIndex - 1);
+    updateDotsState() {
+        // Calcula o índice "real" (mesmo se estiver nos clones)
+        const realIndex = (this.index >= this.totalOriginal) ? 0 : 
+                          (this.index < 0) ? this.totalOriginal - 1 : this.index;
+        
+        Array.from(this.dotsContainer.children).forEach((dot, i) => {
+            dot.classList.toggle('active', i === realIndex);
+        });
     }
+
+    // --- AUTOPLAY ---
 
     startAutoPlay() {
         this.stopAutoPlay();
-        this.autoPlayTimer = setInterval(this.next, CONFIG.carousel.interval);
+        this.intervalID = setInterval(() => this.slide('next'), this.autoPlayDelay);
     }
 
     stopAutoPlay() {
-        if (this.autoPlayTimer) clearInterval(this.autoPlayTimer);
+        clearInterval(this.intervalID);
     }
 
-    // Controles de Dots (Bolinhas)
-    createDots() {
-        if (!this.dotsContainer) return;
-        this.dotsContainer.innerHTML = '';
-        
-        for (let i = 0; i < this.totalOriginal; i++) {
-            const dot = document.createElement('button');
-            dot.className = 'carousel-dot';
-            dot.ariaLabel = `Ir para jogador ${i + 1}`;
-            dot.onclick = () => {
-                this.stopAutoPlay();
-                this.goTo(i);
-                this.startAutoPlay();
-            };
-            this.dotsContainer.appendChild(dot);
-        }
+    resetAutoPlay() {
+        this.stopAutoPlay();
+        this.startAutoPlay();
     }
 
-    updateDots() {
-        if (!this.dotsContainer) return;
-        const dots = this.dotsContainer.children;
-        const activeIndex = this.currentIndex % this.totalOriginal;
-        
-        for (let dot of dots) dot.classList.remove('active');
-        if (dots[activeIndex]) dots[activeIndex].classList.add('active');
-    }
+    // --- EVENTOS (TOUCH & MOUSE) ---
 
     addEventListeners() {
         // Botões
-        document.getElementById('prevBtn')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.stopAutoPlay();
-            this.prev();
-            this.startAutoPlay();
+        this.nextBtn?.addEventListener('click', () => {
+            this.slide('next');
+            this.resetAutoPlay();
+        });
+        
+        this.prevBtn?.addEventListener('click', () => {
+            this.slide('prev');
+            this.resetAutoPlay();
         });
 
-        document.getElementById('nextBtn')?.addEventListener('click', (e) => {
-            e.preventDefault();
-            this.stopAutoPlay();
-            this.next();
+        // Touch Events (Swipe)
+        this.track.addEventListener('touchstart', this.touchStart.bind(this), {passive: true});
+        this.track.addEventListener('touchmove', this.touchMove.bind(this), {passive: true});
+        this.track.addEventListener('touchend', this.touchEnd.bind(this));
+        
+        // Mouse Drag (Desktop)
+        this.track.addEventListener('mousedown', this.touchStart.bind(this));
+        this.track.addEventListener('mousemove', this.touchMove.bind(this));
+        this.track.addEventListener('mouseup', this.touchEnd.bind(this));
+        this.track.addEventListener('mouseleave', () => {
+            if(this.isDragging) this.touchEnd();
             this.startAutoPlay();
         });
-
-        // Mouse Hover
         this.track.addEventListener('mouseenter', () => this.stopAutoPlay());
-        this.track.addEventListener('mouseleave', () => this.startAutoPlay());
+    }
 
-        // Touch / Swipe
-        this.track.addEventListener('touchstart', (e) => {
-            this.startPos = e.touches[0].clientX;
-            this.isDragging = true;
-            this.stopAutoPlay();
-        }, {passive: true});
+    touchStart(e) {
+        this.isDragging = true;
+        this.startPos = this.getPositionX(e);
+        this.animationID = requestAnimationFrame(this.animation.bind(this));
+        this.track.style.cursor = 'grabbing';
+        this.track.style.transition = 'none'; // Drag deve ser instantâneo
+    }
 
-        this.track.addEventListener('touchend', (e) => {
-            if (!this.isDragging) return;
-            const endPos = e.changedTouches[0].clientX;
-            const diff = this.startPos - endPos;
-            
-            if (Math.abs(diff) > 50) {
-                if (diff > 0) this.next();
-                else this.prev();
-            }
-            
-            this.isDragging = false;
-            this.startAutoPlay();
-        });
+    touchMove(e) {
+        if (this.isDragging) {
+            const currentPosition = this.getPositionX(e);
+            const diff = currentPosition - this.startPos;
+            this.currentTranslate = this.prevTranslate + diff;
+        }
+    }
+
+    touchEnd() {
+        this.isDragging = false;
+        cancelAnimationFrame(this.animationID);
+        this.track.style.cursor = 'grab';
+
+        const movedBy = this.currentTranslate - this.prevTranslate;
+
+        // Se moveu o suficiente (> 100px), troca o slide
+        if (movedBy < -100) this.slide('next');
+        else if (movedBy > 100) this.slide('prev');
+        else this.setPositionByIndex(); // Volta pro lugar se moveu pouco
+        
+        this.resetAutoPlay();
+    }
+
+    getPositionX(event) {
+        return event.type.includes('mouse') ? event.pageX : event.touches[0].clientX;
+    }
+
+    animation() {
+        this.setSliderPosition();
+        if (this.isDragging) requestAnimationFrame(this.animation.bind(this));
     }
 }
+
+// Inicializa quando o DOM estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    new InfiniteCarousel('playersCarousel', 'get-players.php');
+});
 
 // ===========================================
 // OUTRAS INICIALIZAÇÕES
