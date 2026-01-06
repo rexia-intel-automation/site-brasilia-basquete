@@ -507,17 +507,16 @@ body {
     display: flex;
     gap: 30px;
     padding: 0;
-    animation: infiniteScroll 40s linear infinite;
+    /* Animação CSS removida para controle total via JS */
+    transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    will-change: transform;
+    cursor: grab;
 }
 
-@keyframes infiniteScroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-50% - 15px));
-    }
+.carousel-track:active {
+    cursor: grabbing;
 }
+/* Keyframes infiniteScroll podem ser removidos */
 
 /* Removido - hover não pausa mais o carrossel */
 .carousel-track {
