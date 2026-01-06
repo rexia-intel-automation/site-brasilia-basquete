@@ -507,24 +507,22 @@ body {
     display: flex;
     gap: 30px;
     padding: 0;
-    /* Animação CSS removida para controle total via JS */
+    /* Transição suave controlada via JS */
     transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    
+    /* Otimizações de performance e UX */
     will-change: transform;
     cursor: grab;
+    
+    /* Propriedades para melhor experiência touch */
+    contain: layout style paint;
+    touch-action: pan-y;
+    user-select: none;
+    -webkit-user-drag: none;
 }
 
 .carousel-track:active {
     cursor: grabbing;
-}
-/* Keyframes infiniteScroll podem ser removidos */
-
-/* Removido - hover não pausa mais o carrossel */
-.carousel-track {
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    contain: layout style paint;
-    touch-action: pan-y;  /* Permite scroll vertical da página enquanto captura swipe horizontal */
-    user-select: none;    /* Previne seleção de texto durante swipe */
-    -webkit-user-drag: none;  /* Previne drag de imagens no iOS */
 }
 
 .player-card {
