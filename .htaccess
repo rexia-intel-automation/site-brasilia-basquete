@@ -73,15 +73,19 @@ RewriteBase /
 # CLEAN URLs
 # ----------------------------------------------
 
-# Remove .php extension from URLs
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME}\.php -f
-RewriteRule ^(.+?)/?$ $1.php [L]
+# Redirect .php URLs to extensionless URLs (301 permanent redirect)
+RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^.]+)\.php($|\ )
+RewriteRule ^(.+)\.php$ /$1 [R=301,L]
 
-# Remove trailing slash
+# Remove trailing slash (except for root)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_URI} (.+)/$
 RewriteRule ^ %1 [R=301,L]
+
+# Allow access to PHP files without extension
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.+?)/?$ $1.php [L]
 
 # ----------------------------------------------
 # FRIENDLY URLs
