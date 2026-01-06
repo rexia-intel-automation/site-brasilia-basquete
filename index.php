@@ -127,10 +127,14 @@
         <h2 class="section-title">Elenco 2024/25</h2>
         <p class="section-subtitle">Os guerreiros do basquete brasiliense</p>
 
-        <div class="carousel-container">
-            <div class="carousel-track" id="carouselTrack">
-                <!-- Players will be loaded dynamically via JavaScript -->
-            </div>
+        <div class="carousel-wrapper" id="playersCarousel">
+            <div class="carousel-track">
+                </div>
+        
+            <button class="carousel-arrow prev" aria-label="Anterior">❮</button>
+            <button class="carousel-arrow next" aria-label="Próximo">❯</button>
+        
+            <div class="carousel-dots"></div>
         </div>
 
         <div class="carousel-navigation">
