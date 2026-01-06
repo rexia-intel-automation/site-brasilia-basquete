@@ -78,7 +78,7 @@ function initSmoothScroll() {
 }
 
 // ===========================================
-// PLAYER CAROUSEL
+// PLAYER CAROUSEL (CORRIGIDO)
 // ===========================================
 
 async function loadPlayers() {
@@ -90,6 +90,7 @@ async function loadPlayers() {
         const track = document.getElementById('carouselTrack');
         if (!track) return;
 
+        // Função auxiliar para criar o HTML do card
         const createCardHTML = (player, isDuplicate = false) => `
             <a href="#" class="player-card" data-player="${player.number}" ${isDuplicate ? 'aria-hidden="true" tabindex="-1"' : ''}>
                 <div class="player-image">
@@ -107,11 +108,15 @@ async function loadPlayers() {
         `;
 
         let htmlContent = '';
+        // Conjunto Original
         players.forEach(p => htmlContent += createCardHTML(p));
+        // Conjunto Duplicado (para loop infinito)
         players.forEach(p => htmlContent += createCardHTML(p, true));
 
         track.innerHTML = htmlContent;
-        initCarousel(); 
+        
+        // Pequeno delay para garantir que o DOM renderizou antes de calcular larguras
+        setTimeout(() => initCarousel(), 100);
 
     } catch (error) {
         console.error('Erro:', error);
@@ -131,6 +136,7 @@ function initCarousel() {
     let autoPlayInterval;
     let isDragging = false;
     let startPos = 0;
+    let isTransitioning = false; // Nova flag para evitar conflitos
 
     function updateMetrics() {
         const allCards = Array.from(track.querySelectorAll('.player-card'));
@@ -139,23 +145,30 @@ function initCarousel() {
         cards = allCards;
         totalOriginalCards = cards.length / 2;
         
+        // Pega o gap computado do CSS ou usa 30 como fallback
         const style = window.getComputedStyle(track);
         gap = parseFloat(style.gap) || 30;
-        cardWidth = cards[0].getBoundingClientRect().width;
         
-        updatePosition();
+        // Usa offsetWidth para garantir a largura correta incluindo paddings/borders se houver
+        cardWidth = cards[0].offsetWidth;
+        
+        updatePosition(false); // Atualiza posição sem animação ao redimensionar
     }
 
     function updatePosition(smooth = true) {
+        // Cálculo preciso da distância
         const moveDistance = (cardWidth + gap) * currentIndex;
         const offset = -moveDistance;
 
         track.style.transition = smooth ? 'transform 0.5s ease-out' : 'none';
         track.style.transform = `translateX(${offset}px)`;
 
+        // Atualiza classes ativas para efeitos visuais
         cards.forEach(c => c.classList.remove('selected', 'active'));
         
         const activeCardIndex = currentIndex % totalOriginalCards;
+        
+        // Destaca o card atual no conjunto original e no duplicado
         if (cards[activeCardIndex]) cards[activeCardIndex].classList.add('active');
         if (cards[activeCardIndex + totalOriginalCards]) cards[activeCardIndex + totalOriginalCards].classList.add('active');
 
@@ -169,7 +182,11 @@ function initCarousel() {
             const dot = document.createElement('button');
             dot.className = 'carousel-dot';
             dot.ariaLabel = `Ir para slide ${i + 1}`;
-            dot.onclick = () => goToIndex(i);
+            dot.onclick = () => {
+                stopAutoPlay();
+                goToIndex(i);
+                startAutoPlay();
+            };
             dotsContainer.appendChild(dot);
         }
     }
@@ -182,74 +199,101 @@ function initCarousel() {
     }
 
     function goToIndex(index) {
+        if (isTransitioning) return; // Bloqueia se já estiver resetando o loop
+
         currentIndex = index;
 
-        if (currentIndex >= cards.length) {
-            currentIndex = 0;
-            updatePosition(false);
-            requestAnimationFrame(() => {
-                requestAnimationFrame(() => {
-                    currentIndex = 1;
-                    updatePosition(true);
-                });
-            });
-            return;
-        } 
-        
-        if (currentIndex < 0) {
-            currentIndex = totalOriginalCards * 2 - 1;
-            updatePosition(false);
+        // LÓGICA DO LOOP INFINITO (DIREITA)
+        if (currentIndex === totalOriginalCards) {
+            // Move visualmente para o primeiro duplicado
+            updatePosition(true);
+            
+            // Trava interações
+            isTransitioning = true;
+
+            // Aguarda o fim da transição CSS (500ms) e pula instantaneamente para o início real
+            setTimeout(() => {
+                track.style.transition = 'none';
+                currentIndex = 0;
+                // Recalcula posição no índice 0 instantaneamente
+                const moveDistance = (cardWidth + gap) * currentIndex;
+                track.style.transform = `translateX(${-moveDistance}px)`;
+                
+                // Libera interações
+                isTransitioning = false;
+            }, 500);
             return;
         }
 
-        if (currentIndex === totalOriginalCards) {
-            updatePosition(true);
+        // LÓGICA DO LOOP INFINITO (ESQUERDA)
+        if (currentIndex < 0) {
+            isTransitioning = true;
+            track.style.transition = 'none';
+            // Pula instantaneamente para o fim do conjunto duplicado
+            currentIndex = totalOriginalCards;
+            const moveDistance = (cardWidth + gap) * currentIndex;
+            track.style.transform = `translateX(${-moveDistance}px)`;
+
+            // Força um reflow (atualização do navegador)
+            void track.offsetWidth;
+
+            // Anima de volta para o último card original
             setTimeout(() => {
-                currentIndex = 0;
-                updatePosition(false);
-            }, 500);
+                track.style.transition = 'transform 0.5s ease-out';
+                currentIndex = totalOriginalCards - 1;
+                updatePosition(true);
+                isTransitioning = false;
+            }, 10);
             return;
         }
 
         updatePosition(true);
     }
 
-    function next() { goToIndex(currentIndex + 1); }
-    function prev() { goToIndex(currentIndex - 1); }
+    function next() { 
+        if (!isTransitioning) goToIndex(currentIndex + 1); 
+    }
+    
+    function prev() { 
+        if (!isTransitioning) goToIndex(currentIndex - 1); 
+    }
 
     function startAutoPlay() {
-        stopAutoPlay();
+        stopAutoPlay(); // Garante que não haja múltiplos intervalos
         autoPlayInterval = setInterval(next, 4000);
     }
 
-    function stopAutoPlay() { clearInterval(autoPlayInterval); }
-
-    document.getElementById('prevBtn')?.addEventListener('click', (e) => { 
-        e.preventDefault();
-        next(); 
-        startAutoPlay(); 
-    });
-    
-    document.getElementById('nextBtn')?.addEventListener('click', (e) => { 
-        e.preventDefault();
-        next(); 
-        startAutoPlay(); 
-    });
-    
-    // Suporte para botão anterior se existir
-    const realPrevBtn = document.getElementById('prevBtn');
-    if (realPrevBtn) {
-         // O listener acima já cobre, mas garantindo a direção correta:
-         realPrevBtn.onclick = (e) => {
-             e.preventDefault();
-             prev();
-             startAutoPlay();
-         }
+    function stopAutoPlay() { 
+        if (autoPlayInterval) clearInterval(autoPlayInterval); 
     }
 
+    // Event Listeners dos Botões
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    if (prevBtn) {
+        prevBtn.onclick = (e) => {
+            e.preventDefault();
+            stopAutoPlay();
+            prev();
+            startAutoPlay();
+        };
+    }
+    
+    if (nextBtn) {
+        nextBtn.onclick = (e) => {
+            e.preventDefault();
+            stopAutoPlay();
+            next();
+            startAutoPlay();
+        };
+    }
+
+    // Pausa no hover/touch
     track.addEventListener('mouseenter', stopAutoPlay);
     track.addEventListener('mouseleave', startAutoPlay);
     
+    // Suporte a Touch (Swipe)
     track.addEventListener('touchstart', e => {
         startPos = e.touches[0].clientX;
         isDragging = true;
@@ -260,18 +304,25 @@ function initCarousel() {
         if (!isDragging) return;
         const endPos = e.changedTouches[0].clientX;
         const diff = startPos - endPos;
+        
+        // Swipe threshold de 50px
         if (Math.abs(diff) > 50) {
             if (diff > 0) next();
             else prev();
         }
+        
         isDragging = false;
         startAutoPlay();
     });
 
-    window.addEventListener('resize', () => {
+    // Resize Observer para manter métricas atualizadas
+    window.addEventListener('resize', debounce(() => {
         updateMetrics();
-    });
+        // Garante alinhamento correto após resize
+        updatePosition(false);
+    }, 200));
 
+    // Inicialização
     setTimeout(() => {
         updateMetrics();
         createDots();
@@ -417,7 +468,6 @@ function initMobileMenu() {
 function init() {
     initNavbar();
     initSmoothScroll();
-    initCarousel();
     initBlogFilters();
     initLoadMore();
     initScrollAnimations();
