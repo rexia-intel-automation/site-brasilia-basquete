@@ -294,7 +294,7 @@ body {
     border-radius: 50%; z-index: 1;
 }
 .timeline-year { font-family: 'Bebas Neue', cursive; font-size: 42px; color: var(--primary-blue); line-height: 1; margin-bottom: 10px; }
-.timeline-image { width: 100%; border-radius: 10px; margin-top: 15px; }
+.timeline-image { width: 100%; max-height: fit-content; border-radius: inherit; margin-top: 15px; }
 
 /* =========================================
    BLOG & NEWS (ESTILOS RESTAURADOS MOBILE)
