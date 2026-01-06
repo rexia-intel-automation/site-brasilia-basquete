@@ -97,243 +97,180 @@ function initSmoothScroll() {
 
 async function loadPlayers() {
     try {
-        const response = await fetch('get-players.php');
-        if (!response.ok) {
-            console.warn('Could not load players from API');
-            return;
-        }
+        // Nota: Ajuste o caminho ('assets/data/players.json' ou 'get-players.php') conforme sua estrutura real
+        const response = await fetch('assets/data/players.json'); 
+        if (!response.ok) throw new Error('Erro ao carregar jogadores');
 
         const players = await response.json();
         const track = document.getElementById('carouselTrack');
-
         if (!track) return;
 
-        // Clear existing content
-        track.innerHTML = '';
-
-        // Create player card HTML
-        const createPlayerCard = (player) => {
-            return `
-                <a href="#" class="player-card" data-player="${player.number}">
-                    <div class="player-image">
-                        <img src="${player.photo}"
-                             alt="${player.name}"
-                             loading="lazy"
-                             onerror="this.style.display='none'; this.parentElement.classList.add('no-image');">
-                        <div class="player-image-fallback">
-                            <span class="player-number-large">#${player.number}</span>
-                        </div>
+        const createCardHTML = (player, isDuplicate = false) => `
+            <a href="#" class="player-card" data-player="${player.number}" ${isDuplicate ? 'aria-hidden="true" tabindex="-1"' : ''}>
+                <div class="player-image">
+                    <img src="${player.photo}" alt="${player.name}" loading="lazy" onerror="this.parentElement.classList.add('no-image'); this.style.display='none'">
+                    <div class="player-image-fallback">
+                        <span class="player-number-large">#${player.number}</span>
                     </div>
-                    <div class="player-info">
-                        <div class="player-number">#${player.number}</div>
-                        <h3 class="player-name">${player.name}</h3>
-                        <p class="player-position">${player.position}</p>
-                    </div>
-                </a>
-            `;
-        };
+                </div>
+                <div class="player-info">
+                    <div class="player-number">#${player.number}</div>
+                    <h3 class="player-name">${player.name}</h3>
+                    <p class="player-position">${player.position}</p>
+                </div>
+            </a>
+        `;
 
-        // Add players (first set)
-        players.forEach(player => {
-            track.innerHTML += createPlayerCard(player);
-        });
+        let htmlContent = '';
+        players.forEach(p => htmlContent += createCardHTML(p));
+        players.forEach(p => htmlContent += createCardHTML(p, true));
 
-        // Add players again (second set for infinite loop)
-        players.forEach(player => {
-            track.innerHTML += createPlayerCard(player);
-        });
+        track.innerHTML = htmlContent;
+        initCarousel(); 
 
     } catch (error) {
-        console.error('Error loading players:', error);
+        console.error('Erro:', error);
     }
 }
 
 function initCarousel() {
     const track = document.getElementById('carouselTrack');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
     const dotsContainer = document.getElementById('carouselDots');
-
     if (!track) return;
 
+    let cards = [];
+    let cardWidth = 0;
+    let gap = 0;
+    let totalOriginalCards = 0;
     let currentIndex = 0;
-    let selectedCard = null;
-    let isAutoMode = true;
-    let autoModeTimeout = null;
-    let touchStartX = 0;
-    let touchEndX = 0;
-    let touchStartY = 0;
-    let touchEndY = 0;
+    let autoPlayInterval;
     let isDragging = false;
+    let startPos = 0;
 
-    function getCards() {
+    function updateMetrics() {
         const allCards = Array.from(track.querySelectorAll('.player-card'));
-        return allCards.slice(0, Math.floor(allCards.length / 2));
+        if (allCards.length === 0) return;
+        
+        cards = allCards;
+        totalOriginalCards = cards.length / 2;
+        
+        const style = window.getComputedStyle(track);
+        gap = parseFloat(style.gap) || 30;
+        cardWidth = cards[0].getBoundingClientRect().width;
+        
+        updatePosition();
     }
 
-    function getCardDimensions() {
-        const cards = getCards();
-        if (cards.length === 0) return { width: 280, gap: 30 };
+    function updatePosition(smooth = true) {
+        const moveDistance = (cardWidth + gap) * currentIndex;
+        const offset = -moveDistance;
 
-        const firstCard = cards[0];
-        const cardWidth = firstCard.getBoundingClientRect().width;
-        const computedStyle = window.getComputedStyle(track);
-        const gap = parseFloat(computedStyle.gap) || 30;
+        track.style.transition = smooth ? 'transform 0.5s ease-out' : 'none';
+        track.style.transform = `translateX(${offset}px)`;
 
-        return { width: cardWidth, gap: gap };
+        cards.forEach(c => c.classList.remove('selected', 'active'));
+        
+        const activeCardIndex = currentIndex % totalOriginalCards;
+        if (cards[activeCardIndex]) cards[activeCardIndex].classList.add('active');
+        if (cards[activeCardIndex + totalOriginalCards]) cards[activeCardIndex + totalOriginalCards].classList.add('active');
+
+        updateDots(activeCardIndex);
     }
 
     function createDots() {
         if (!dotsContainer) return;
-
-        const cards = getCards();
         dotsContainer.innerHTML = '';
-
-        cards.forEach((_, index) => {
+        for (let i = 0; i < totalOriginalCards; i++) {
             const dot = document.createElement('button');
             dot.className = 'carousel-dot';
-            dot.setAttribute('aria-label', `Ir para jogador ${index + 1}`);
-
-            if (index === 0) {
-                dot.classList.add('active');
-            }
-
-            dot.addEventListener('click', () => {
-                selectCard(index);
-            });
-
+            dot.ariaLabel = `Ir para slide ${i + 1}`;
+            dot.onclick = () => goToIndex(i);
             dotsContainer.appendChild(dot);
-        });
+        }
     }
 
-    function updateDots() {
+    function updateDots(index) {
         if (!dotsContainer) return;
-
-        const dots = dotsContainer.querySelectorAll('.carousel-dot');
-        dots.forEach((dot, index) => {
-            if (index === currentIndex) {
-                dot.classList.add('active');
-            } else {
-                dot.classList.remove('active');
-            }
-        });
+        const dots = dotsContainer.children;
+        for (let dot of dots) dot.classList.remove('active');
+        if (dots[index]) dots[index].classList.add('active');
     }
 
-    function centerCard(index, skipTransition = false) {
-        const cards = getCards();
-        const { width, gap } = getCardDimensions();
-        const cardWidth = width + gap;
-        const containerWidth = track.parentElement.offsetWidth;
-        const offset = (containerWidth / 2) - (width / 2) - (index * cardWidth);
+    function goToIndex(index) {
+        currentIndex = index;
 
-        track.style.animation = 'none';
-        if (skipTransition) {
-            track.style.transition = 'none';
-        } else {
-            track.style.transition = 'transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)';
-        }
-        track.style.transform = `translateX(${offset}px)`;
-    }
-
-    function selectCard(targetIndex) {
-        const cards = getCards();
-        const totalCards = cards.length;
-
-        // Detecta transição primeiro <-> último para loop seamless
-        if (currentIndex === 0 && targetIndex === -1) {
-            // Primeiro -> Último
-            jumpToCardSeamless(totalCards - 1, 'prev');
-            return;
-        } else if (currentIndex === totalCards - 1 && targetIndex === totalCards) {
-            // Último -> Primeiro
-            jumpToCardSeamless(0, 'next');
-            return;
-        }
-
-        // Normaliza índice
-        const normalizedIndex = ((targetIndex % totalCards) + totalCards) % totalCards;
-
-        // Remove seleção anterior
-        track.querySelectorAll('.player-card').forEach(c => {
-            c.classList.remove('selected');
-        });
-
-        // Adiciona seleção ao card e duplicado
-        const card = cards[normalizedIndex];
-        card.classList.add('selected');
-
-        const allCards = Array.from(track.querySelectorAll('.player-card'));
-        const duplicateIndex = normalizedIndex + totalCards;
-        if (allCards[duplicateIndex]) {
-            allCards[duplicateIndex].classList.add('selected');
-        }
-
-        selectedCard = card;
-        currentIndex = normalizedIndex;
-        isAutoMode = false;
-
-        centerCard(normalizedIndex);
-        updateDots();
-        startAutoModeTimer();
-    }
-
-    function jumpToCardSeamless(targetIndex, direction) {
-        const cards = getCards();
-        const totalCards = cards.length;
-
-        // 1. Vai para o duplicado sem transição
-        const duplicateOffset = direction === 'next' ? -totalCards : totalCards;
-        centerCard(currentIndex + duplicateOffset, true);
-
-        // 2. Força reflow
-        track.offsetHeight;
-
-        // 3. Atualiza index e vai para o card real com transição
-        currentIndex = targetIndex;
-
-        setTimeout(() => {
-            // Remove seleção anterior
-            track.querySelectorAll('.player-card').forEach(c => {
-                c.classList.remove('selected');
+        if (currentIndex >= cards.length) {
+            currentIndex = 0;
+            updatePosition(false);
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    currentIndex = 1;
+                    updatePosition(true);
+                });
             });
+            return;
+        } 
+        
+        if (currentIndex < 0) {
+            currentIndex = totalOriginalCards * 2 - 1;
+            updatePosition(false);
+            return;
+        }
 
-            // Adiciona seleção
-            const card = cards[targetIndex];
-            card.classList.add('selected');
+        if (currentIndex === totalOriginalCards) {
+            updatePosition(true);
+            setTimeout(() => {
+                currentIndex = 0;
+                updatePosition(false);
+            }, 500);
+            return;
+        }
 
-            const allCards = Array.from(track.querySelectorAll('.player-card'));
-            const duplicateIndex = targetIndex + totalCards;
-            if (allCards[duplicateIndex]) {
-                allCards[duplicateIndex].classList.add('selected');
-            }
-
-            selectedCard = card;
-            isAutoMode = false;
-
-            centerCard(targetIndex);
-            updateDots();
-            startAutoModeTimer();
-        }, 10);
+        updatePosition(true);
     }
 
-    function startAutoModeTimer() {
-        clearTimeout(autoModeTimeout);
-        autoModeTimeout = setTimeout(() => {
-            resetCarousel();
-        }, 5000);
+    function next() { goToIndex(currentIndex + 1); }
+    function prev() { goToIndex(currentIndex - 1); }
+
+    function startAutoPlay() {
+        stopAutoPlay();
+        autoPlayInterval = setInterval(next, 4000);
     }
 
-    function resetCarousel() {
-        track.querySelectorAll('.player-card').forEach(c => {
-            c.classList.remove('selected');
-        });
-        selectedCard = null;
-        isAutoMode = true;
-        clearTimeout(autoModeTimeout);
-        track.style.animation = '';
-        track.style.transform = '';
-        track.style.transition = '';
-    }
+    function stopAutoPlay() { clearInterval(autoPlayInterval); }
+
+    document.getElementById('prevBtn')?.addEventListener('click', () => { prev(); startAutoPlay(); });
+    document.getElementById('nextBtn')?.addEventListener('click', () => { next(); startAutoPlay(); });
+
+    track.addEventListener('mouseenter', stopAutoPlay);
+    track.addEventListener('mouseleave', startAutoPlay);
+    
+    track.addEventListener('touchstart', e => {
+        startPos = e.touches[0].clientX;
+        isDragging = true;
+        stopAutoPlay();
+    }, {passive: true});
+
+    track.addEventListener('touchend', e => {
+        if (!isDragging) return;
+        const endPos = e.changedTouches[0].clientX;
+        const diff = startPos - endPos;
+        if (Math.abs(diff) > 50) {
+            if (diff > 0) next();
+            else prev();
+        }
+        isDragging = false;
+        startAutoPlay();
+    });
+
+    window.addEventListener('resize', updateMetrics);
+
+    setTimeout(() => {
+        updateMetrics();
+        createDots();
+        startAutoPlay();
+    }, 100);
+}
 
     // Previous button
     if (prevBtn) {
