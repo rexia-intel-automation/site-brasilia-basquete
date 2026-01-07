@@ -449,42 +449,70 @@ function debounce(func, wait) {
 
 // Helper para manter a compatibilidade com a função original do Menu se não quiser reescrever
 function initMobileMenuOriginal() {
-    // ... Copie o conteúdo da função initMobileMenu original aqui ...
-    // Vou reinserir a versão original compactada para garantir funcionamento:
+    console.log('[Menu] Iniciando menu mobile...');
+
     const menuToggle = document.querySelector('.mobile-menu-toggle');
     const navLinksLeft = document.querySelector('.nav-links.left');
     const navLinksRight = document.querySelector('.nav-links.right');
     const body = document.body;
+
+    console.log('[Menu] Elementos encontrados:', {
+        menuToggle: !!menuToggle,
+        navLinksLeft: !!navLinksLeft,
+        navLinksRight: !!navLinksRight
+    });
+
+    if (!menuToggle || !navLinksLeft || !navLinksRight) {
+        console.error('[Menu] Elementos necessários não encontrados!');
+        return;
+    }
+
+    // Cria ou encontra overlay
     let overlay = document.querySelector('.mobile-menu-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
         overlay.className = 'mobile-menu-overlay';
         document.body.insertBefore(overlay, document.body.firstChild);
+        console.log('[Menu] Overlay criado');
     }
-    if (!menuToggle || !navLinksLeft || !navLinksRight) return;
+
+    // Cria ou encontra menu mobile unificado
     let mobileMenu = document.querySelector('.mobile-menu-unified');
     if (!mobileMenu) {
         mobileMenu = document.createElement('ul');
         mobileMenu.className = 'nav-links mobile-menu-unified';
+
         const leftLinks = navLinksLeft.querySelectorAll('li:not(.social-links)');
         leftLinks.forEach(li => mobileMenu.appendChild(li.cloneNode(true)));
+
         const rightLinks = navLinksRight.querySelectorAll('li:not(.social-links)');
         rightLinks.forEach(li => mobileMenu.appendChild(li.cloneNode(true)));
+
         const socialLinks = navLinksRight.querySelector('.social-links');
         if (socialLinks) mobileMenu.appendChild(socialLinks.cloneNode(true));
+
         document.body.appendChild(mobileMenu);
+        console.log('[Menu] Menu mobile criado com', mobileMenu.children.length, 'itens');
     }
+
     function closeMenu() {
+        console.log('[Menu] Fechando menu');
         menuToggle.classList.remove('active');
         mobileMenu.classList.remove('show');
         overlay.classList.remove('active');
         body.classList.remove('menu-open');
         setTimeout(() => mobileMenu.classList.remove('mobile-active'), 300);
     }
+
     menuToggle.onclick = (e) => {
         e.stopPropagation();
-        if (menuToggle.classList.contains('active')) closeMenu();
-        else {
+        const isActive = menuToggle.classList.contains('active');
+        console.log('[Menu] Toggle clicado - Estado atual:', isActive ? 'aberto' : 'fechado');
+
+        if (isActive) {
+            closeMenu();
+        } else {
+            console.log('[Menu] Abrindo menu');
             menuToggle.classList.add('active');
             mobileMenu.classList.add('mobile-active');
             overlay.classList.add('active');
@@ -492,8 +520,11 @@ function initMobileMenuOriginal() {
             setTimeout(() => mobileMenu.classList.add('show'), 10);
         }
     };
+
     overlay.onclick = closeMenu;
     mobileMenu.querySelectorAll('a').forEach(l => l.onclick = closeMenu);
+
+    console.log('[Menu] Menu mobile inicializado com sucesso!');
 }
 
 window.BrasiliaBasquete = {
