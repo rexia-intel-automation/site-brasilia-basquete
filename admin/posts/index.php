@@ -28,6 +28,12 @@ if ($filter_category) {
 }
 
 if ($filter_status !== '') {
+    // Convert string status to numeric value
+    if ($filter_status === 'draft') {
+        $filter_status = 0;
+    } elseif ($filter_status === 'published') {
+        $filter_status = 1;
+    }
     $where_conditions[] = "p.published = ?";
     $params[] = $filter_status;
 }

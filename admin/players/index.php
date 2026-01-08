@@ -13,8 +13,15 @@ if (isset($_GET['delete'])) {
     exit;
 }
 
-// Get all players
-$players = $db->query("SELECT * FROM players ORDER BY number ASC")->fetchAll();
+// Get filter parameter
+$filter_status = $_GET['status'] ?? '';
+
+// Build query based on filter
+if ($filter_status === 'inactive') {
+    $players = $db->query("SELECT * FROM players WHERE active = 0 ORDER BY number ASC")->fetchAll();
+} else {
+    $players = $db->query("SELECT * FROM players ORDER BY number ASC")->fetchAll();
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR" data-theme="dark">

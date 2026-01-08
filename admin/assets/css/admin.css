@@ -643,6 +643,37 @@ body {
     font-size: 12px;
 }
 
+/* CARDS */
+.card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+}
+
+.card-header h3 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.card-body {
+    padding: 24px;
+}
+
+.card-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-color);
+    background: var(--bg-tertiary);
+}
+
 /* CONTENT SECTIONS */
 .content-grid {
     display: grid;
@@ -726,8 +757,31 @@ body {
 }
 
 /* FORMS */
+.form-layout {
+    width: 100%;
+}
+
 .form-grid {
     max-width: 800px;
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 24px;
+}
+
+@media (max-width: 1024px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-main {
+    flex: 1;
+}
+
+.form-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
 }
 
 .form-row {
@@ -794,6 +848,31 @@ body {
     margin-top: 32px;
 }
 
+/* FORM CONTROL */
+.form-control {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    transition: all 0.2s;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    background: var(--bg-secondary);
+}
+
+/* Required field indicator */
+.required::after {
+    content: ' *';
+    color: #dc2626;
+}
+
 /* BUTTONS */
 .btn {
     display: inline-flex;
@@ -819,6 +898,36 @@ body {
     background: var(--primary-orange);
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-warning {
+    background: var(--primary-orange);
+    color: white;
+}
+
+.btn-warning:hover {
+    background: #b86600;
 }
 
 .btn-outline {
@@ -860,11 +969,6 @@ body {
     color: white;
 }
 
-.btn-danger:hover {
-    background: #dc2626;
-    color: white;
-}
-
 .action-buttons {
     display: flex;
     gap: 8px;
@@ -896,6 +1000,11 @@ body {
     color: white;
 }
 
+.badge-info {
+    background: #0ea5e9;
+    color: white;
+}
+
 /* ALERTS */
 .alert {
     padding: 16px 20px;
@@ -912,15 +1021,80 @@ body {
     color: #065f46;
 }
 
-.alert-error {
+[data-theme="dark"] .alert-success {
+    background: rgba(16, 185, 129, 0.15);
+    color: #10b981;
+}
+
+.alert-error,
+.alert-danger {
     background: #fee2e2;
     border: 1px solid #dc2626;
     color: #991b1b;
 }
 
+[data-theme="dark"] .alert-error,
+[data-theme="dark"] .alert-danger {
+    background: rgba(220, 38, 38, 0.15);
+    color: #f87171;
+}
+
+.alert-info {
+    background: #dbeafe;
+    border: 1px solid #0ea5e9;
+    color: #075985;
+}
+
+[data-theme="dark"] .alert-info {
+    background: rgba(14, 165, 233, 0.15);
+    color: #38bdf8;
+}
+
+/* Auto-hide animation */
+.alert.auto-hide {
+    animation: fadeOut 0.5s ease-in-out 5s forwards;
+}
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        height: 0;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+}
+
+/* FILTERS */
+.filter-form {
+    margin-bottom: 24px;
+}
+
+.filter-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.filter-row .form-group {
+    margin-bottom: 0;
+    flex: 1;
+    min-width: 200px;
+}
+
 /* UTILITIES */
 .text-center {
     text-align: center;
+}
+
+.mb-4 {
+    margin-bottom: 24px;
+}
+
+.input-disabled-bg {
+    background: var(--bg-tertiary);
+    opacity: 0.7;
 }
 
 /* RESPONSIVE */
